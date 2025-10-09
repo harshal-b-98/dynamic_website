@@ -1,45 +1,45 @@
+import ChatInterface from '@/components/organisms/ChatInterface'
+
 export default function Home() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
-      <div className="text-center space-y-6 p-8">
-        <h1 className="text-5xl font-bold text-gray-900">
-          Dynamic AI-Driven Website
-        </h1>
-        <p className="text-xl text-gray-600 max-w-2xl">
-          A conversation-first platform that generates personalized web pages
-          dynamically using AI, RAG, and component-based architecture.
-        </p>
-        <div className="flex gap-4 justify-center">
-          <a
-            href="/chat"
-            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            Start Chat
-          </a>
-          <a
-            href="/docs"
-            className="px-6 py-3 bg-white text-blue-600 rounded-lg border border-blue-600 hover:bg-blue-50 transition-colors"
-          >
-            View Docs
-          </a>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      <div className="container mx-auto px-4 py-8">
+        {/* Header Section */}
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-gray-900 mb-3">
+            Consumer IQ
+          </h1>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            Your AI-powered conversation assistant. Ask questions, get insights,
+            and explore personalized content.
+          </p>
         </div>
-        <div className="mt-12 grid grid-cols-3 gap-6 text-left">
-          <div className="p-4 bg-white rounded-lg shadow-sm">
+
+        {/* Chat Interface Section */}
+        <div className="max-w-4xl mx-auto">
+          <div className="h-[600px]">
+            <ChatInterface />
+          </div>
+        </div>
+
+        {/* Feature Cards */}
+        <div className="mt-12 max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="p-6 bg-white rounded-lg shadow-sm">
             <h3 className="font-semibold text-gray-900 mb-2">🤖 AI-Powered</h3>
             <p className="text-sm text-gray-600">
-              Uses Claude and GPT-4 for intelligent conversations and content generation
+              Powered by Claude and GPT-4 for intelligent conversations
             </p>
           </div>
-          <div className="p-4 bg-white rounded-lg shadow-sm">
-            <h3 className="font-semibold text-gray-900 mb-2">🎯 Personalized</h3>
+          <div className="p-6 bg-white rounded-lg shadow-sm">
+            <h3 className="font-semibold text-gray-900 mb-2">💬 Persistent Chat</h3>
             <p className="text-sm text-gray-600">
-              Detects user personas and tailors content dynamically
+              Your conversations are saved and accessible across sessions
             </p>
           </div>
-          <div className="p-4 bg-white rounded-lg shadow-sm">
-            <h3 className="font-semibold text-gray-900 mb-2">⚡ Fast</h3>
+          <div className="p-6 bg-white rounded-lg shadow-sm">
+            <h3 className="font-semibold text-gray-900 mb-2">⚡ Real-time</h3>
             <p className="text-sm text-gray-600">
-              Built on Next.js 15 with optimized performance
+              Get instant responses with seamless interaction
             </p>
           </div>
         </div>
