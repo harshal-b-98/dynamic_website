@@ -98,19 +98,21 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Get conversation history for context
+    // Get conversation history for context (last 10 messages)
     const { data: history } = await supabaseAdmin
       .from('dyn_messages')
       .select('role, content')
       .eq('conversation_id', activeConversationId)
-      .order('created_at', { ascending: true })
+      .order('created_at', { ascending: false })
       .limit(10)
 
-    // Build conversation history for Claude
-    const conversationHistory = (history || []).map((msg: { role: string; content: string }) => ({
-      role: msg.role === 'user' ? 'user' : 'assistant',
-      content: msg.content
-    }))
+    // Build conversation history for Claude (reverse to get chronological order)
+    const conversationHistory = (history || [])
+      .reverse()
+      .map((msg: { role: string; content: string }) => ({
+        role: msg.role === 'user' ? 'user' : 'assistant',
+        content: msg.content
+      }))
 
     // Generate AI response using Claude
     const systemPrompt = `You are ConsumerIQ Assistant, an AI helper for ConsumerIQ - a beverage alcohol analytics platform for U.S. suppliers.
@@ -139,9 +141,17 @@ Respond helpfully based on the user's intent. Keep responses concise (2-3 paragr
       messages: conversationHistory as any
     })
 
-    const aiResponse = claudeResponse.content[0].type === 'text'
-      ? claudeResponse.content[0].text
-      : 'I apologize, I encountered an error generating a response.'
+    // Validate Claude response structure
+    let aiResponse = 'I apologize, I encountered an error generating a response.'
+
+    if (claudeResponse.content && claudeResponse.content.length > 0) {
+      const firstContent = claudeResponse.content[0]
+      if (firstContent.type === 'text') {
+        aiResponse = firstContent.text
+      }
+    } else {
+      console.error('Claude response missing content:', claudeResponse)
+    }
 
     // Store assistant message
     const { data: assistantMessage, error: assistantMsgError } = await supabaseAdmin
