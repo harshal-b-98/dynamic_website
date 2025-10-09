@@ -102,17 +102,9 @@ export default function ChatInterface({
   }
 
   return (
-    <div className="flex flex-col h-full bg-white rounded-lg shadow-lg overflow-hidden">
-      {/* Header */}
-      <div className="bg-indigo-600 text-white px-6 py-4">
-        <h2 className="text-xl font-semibold">Chat Assistant</h2>
-        <p className="text-sm text-indigo-200 mt-1">
-          Ask me anything about our products and services
-        </p>
-      </div>
-
+    <div className="flex flex-col h-full bg-white overflow-hidden">
       {/* Messages Container */}
-      <div className="flex-1 overflow-y-auto p-6 space-y-4">
+      <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.length === 0 && !isLoading && (
           <div className="text-center text-gray-500 mt-8">
             <p className="text-lg mb-2">👋 Welcome!</p>
