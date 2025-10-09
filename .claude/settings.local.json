@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__atlassian__getAccessibleAtlassianResources",
+      "mcp__atlassian__search",
+      "mcp__atlassian__getVisibleJiraProjects",
+      "mcp__atlassian__createJiraIssue",
+      "mcp__atlassian__getConfluencePage",
+      "mcp__atlassian__getConfluencePageDescendants",
+      "mcp__atlassian__getPagesInConfluenceSpace",
+      "mcp__atlassian__createConfluencePage",
+      "mcp__atlassian__searchJiraIssuesUsingJql",
+      "Bash(git --version)",
+      "Bash(gh:*)",
+      "Bash(git init:*)",
+      "Bash(git branch:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(git -C \"D:\\ClaudeProjects\\dynamic_website\" log --oneline -10)",
+      "Bash(git -C \"D:\\ClaudeProjects\\dynamic_website\" status)",
+      "Bash(test:*)",
+      "Bash(npm init:*)",
+      "Bash(npm install:*)",
+      "Bash(npx tailwindcss init:*)",
+      "Bash(npm run dev:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
