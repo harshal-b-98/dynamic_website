@@ -3,6 +3,8 @@
 import React, { useState, useEffect, useRef } from 'react'
 import ChatMessage from '@/components/atoms/ChatMessage'
 import ChatInput from '@/components/molecules/ChatInput'
+import { DynamicPageRenderer } from '@/components/organisms/DynamicPageRenderer'
+import { PageSpecification } from '@/lib/page-generation'
 
 interface Message {
   id: string
@@ -28,6 +30,7 @@ export default function ChatInterface({
   )
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [currentPageSpec, setCurrentPageSpec] = useState<PageSpecification | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   // Scroll to bottom when messages change
@@ -87,6 +90,11 @@ export default function ChatInterface({
         setConversationId(data.conversationId)
       }
 
+      // Update page spec if one was generated
+      if (data.pageSpec) {
+        setCurrentPageSpec(data.pageSpec)
+      }
+
       // Add both user and assistant messages to the list
       setMessages((prev) => [
         ...prev,
@@ -103,57 +111,89 @@ export default function ChatInterface({
 
   return (
     <div className="flex flex-col h-full bg-white overflow-hidden">
-      {/* Messages Container */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        {messages.length === 0 && !isLoading && (
-          <div className="text-center text-gray-500 mt-8">
-            <p className="text-lg mb-2">👋 Welcome!</p>
-            <p>Start a conversation by sending a message below.</p>
+      {/* Dynamic Page Display */}
+      {currentPageSpec && (
+        <div className="flex-1 overflow-y-auto p-6">
+          <div className="max-w-6xl mx-auto">
+            {/* Page Dismiss Button */}
+            <div className="mb-4 flex justify-between items-center">
+              <button
+                onClick={() => setCurrentPageSpec(null)}
+                className="text-sm text-gray-600 hover:text-gray-900 flex items-center gap-2"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+                Back to chat
+              </button>
+              <span className="text-xs text-gray-500">AI-Generated Page</span>
+            </div>
+
+            {/* Render the Dynamic Page */}
+            <DynamicPageRenderer
+              pageSpec={currentPageSpec}
+              onComponentError={(componentType, error) => {
+                console.error(`Component error: ${componentType}`, error)
+              }}
+            />
           </div>
-        )}
+        </div>
+      )}
 
-        {messages.map((msg) => (
-          <ChatMessage
-            key={msg.id}
-            role={msg.role}
-            content={msg.content}
-            timestamp={msg.created_at}
-          />
-        ))}
+      {/* Messages Container */}
+      {!currentPageSpec && (
+        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          {messages.length === 0 && !isLoading && (
+            <div className="text-center text-gray-500 mt-8">
+              <p className="text-lg mb-2">👋 Welcome!</p>
+              <p>Start a conversation by sending a message below.</p>
+              <p className="text-sm mt-4">Try asking about ConsumerIQ features!</p>
+            </div>
+          )}
 
-        {isLoading && (
-          <div className="flex justify-start mb-4">
-            <div className="bg-gray-100 rounded-lg px-4 py-3 border border-gray-200">
-              <div className="flex space-x-2">
-                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                <div
-                  className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
-                  style={{ animationDelay: '0.1s' }}
-                ></div>
-                <div
-                  className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
-                  style={{ animationDelay: '0.2s' }}
-                ></div>
+          {messages.map((msg) => (
+            <ChatMessage
+              key={msg.id}
+              role={msg.role}
+              content={msg.content}
+              timestamp={msg.created_at}
+            />
+          ))}
+
+          {isLoading && (
+            <div className="flex justify-start mb-4">
+              <div className="bg-gray-100 rounded-lg px-4 py-3 border border-gray-200">
+                <div className="flex space-x-2">
+                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                  <div
+                    className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                    style={{ animationDelay: '0.1s' }}
+                  ></div>
+                  <div
+                    className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                    style={{ animationDelay: '0.2s' }}
+                  ></div>
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
-            <p className="font-medium">Error</p>
-            <p className="text-sm">{error}</p>
-          </div>
-        )}
+          {error && (
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+              <p className="font-medium">Error</p>
+              <p className="text-sm">{error}</p>
+            </div>
+          )}
 
-        <div ref={messagesEndRef} />
-      </div>
+          <div ref={messagesEndRef} />
+        </div>
+      )}
 
       {/* Input */}
       <ChatInput
         onSendMessage={handleSendMessage}
         disabled={isLoading}
-        placeholder="Type your message..."
+        placeholder={currentPageSpec ? "Ask another question..." : "Type your message..."}
       />
     </div>
   )

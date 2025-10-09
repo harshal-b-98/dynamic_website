@@ -18,48 +18,22 @@ export const COMPONENT_IMPORTS: Record<string, LazyExoticComponent<ComponentType
   // Content & Information
   'rich-text-content': lazy(() => import('@/components/dynamic/RichTextContent')),
   'feature-grid': lazy(() => import('@/components/dynamic/FeatureGrid')),
-  'feature-highlight': lazy(() => import('@/components/dynamic/FeatureHighlight')),
   'step-by-step': lazy(() => import('@/components/dynamic/StepByStep')),
   'faq-accordion': lazy(() => import('@/components/dynamic/FaqAccordion')),
 
   // Comparison & Decision
   'comparison-table': lazy(() => import('@/components/dynamic/ComparisonTable')),
-  'pricing-table': lazy(() => import('@/components/dynamic/PricingTable')),
-  'pros-cons-list': lazy(() => import('@/components/dynamic/ProsConsList')),
 
   // Social Proof & Trust
   'testimonial-block': lazy(() => import('@/components/dynamic/TestimonialBlock')),
-  'case-study-card': lazy(() => import('@/components/dynamic/CaseStudyCard')),
-  'trust-indicators': lazy(() => import('@/components/dynamic/TrustIndicators')),
-  'logo-cloud': lazy(() => import('@/components/dynamic/LogoCloud')),
 
   // Interactive & Engagement
   'cta-section': lazy(() => import('@/components/dynamic/CtaSection')),
   'form-section': lazy(() => import('@/components/dynamic/FormSection')),
-  'interactive-demo': lazy(() => import('@/components/dynamic/InteractiveDemo')),
 
   // Data & Analytics
   'metric-card': lazy(() => import('@/components/dynamic/MetricCard')),
-  'stats-display': lazy(() => import('@/components/dynamic/StatsDisplay')),
-  'chart-display': lazy(() => import('@/components/dynamic/ChartDisplay')),
-
-  // Technical & Detailed
-  'tech-spec-table': lazy(() => import('@/components/dynamic/TechSpecTable')),
-  'api-reference': lazy(() => import('@/components/dynamic/ApiReference')),
-  'code-snippet': lazy(() => import('@/components/dynamic/CodeSnippet')),
-
-  // Navigation & Guidance
-  'breadcrumbs': lazy(() => import('@/components/dynamic/Breadcrumbs')),
-  'related-content': lazy(() => import('@/components/dynamic/RelatedContent')),
-  'next-steps': lazy(() => import('@/components/dynamic/NextSteps')),
-
-  // Media & Visual
-  'image-gallery': lazy(() => import('@/components/dynamic/ImageGallery')),
-  'video-embed': lazy(() => import('@/components/dynamic/VideoEmbed')),
-
-  // Alerts & Messaging
-  'alert-banner': lazy(() => import('@/components/dynamic/AlertBanner')),
-  'announcement-card': lazy(() => import('@/components/dynamic/AnnouncementCard'))
+  'stats-display': lazy(() => import('@/components/dynamic/StatsDisplay'))
 }
 
 /**

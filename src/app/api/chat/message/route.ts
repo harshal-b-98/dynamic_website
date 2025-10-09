@@ -153,6 +153,43 @@ Respond helpfully based on the user's intent. Keep responses concise (2-3 paragr
       console.error('Claude response missing content:', claudeResponse)
     }
 
+    // Determine if we should generate a dynamic page based on intent
+    const pageGenerationIntents = [
+      'product_inquiry',
+      'data_query',
+      'competitor_analysis',
+      'distributor_inquiry',
+      'compliance_question'
+    ]
+
+    let pageSpec = null
+
+    if (pageGenerationIntents.includes(intent)) {
+      try {
+        // Call page generation API
+        const pageGenResponse = await fetch(`${request.nextUrl.origin}/api/page/generate`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            query: message,
+            intent,
+            conversationHistory: conversationHistory.slice(-5), // Last 5 messages for context
+            sessionId: session.sessionId
+          })
+        })
+
+        if (pageGenResponse.ok) {
+          const pageData = await pageGenResponse.json()
+          if (pageData.success && pageData.pageSpec) {
+            pageSpec = pageData.pageSpec
+          }
+        }
+      } catch (pageGenError) {
+        console.error('Page generation error (non-blocking):', pageGenError)
+        // Continue without page - don't fail the chat
+      }
+    }
+
     // Store assistant message
     const { data: assistantMessage, error: assistantMsgError } = await supabaseAdmin
       .from('dyn_messages')
@@ -163,7 +200,9 @@ Respond helpfully based on the user's intent. Keep responses concise (2-3 paragr
         metadata: {
           model: DEFAULT_CLAUDE_PARAMS.model,
           input_tokens: claudeResponse.usage.input_tokens,
-          output_tokens: claudeResponse.usage.output_tokens
+          output_tokens: claudeResponse.usage.output_tokens,
+          pageGenerated: !!pageSpec,
+          ...(pageSpec && { pageId: pageSpec.id })
         }
       })
       .select()
@@ -182,7 +221,8 @@ Respond helpfully based on the user's intent. Keep responses concise (2-3 paragr
       conversationId: activeConversationId,
       userMessage,
       assistantMessage,
-      sessionId: session.sessionId
+      sessionId: session.sessionId,
+      ...(pageSpec && { pageSpec })
     })
   } catch (error) {
     console.error('Error in chat message route:', error)
