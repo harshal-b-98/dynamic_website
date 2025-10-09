@@ -30,7 +30,7 @@ export default function ChatInput({
   }
 
   return (
-    <div className="border-t border-gray-200 bg-white p-4">
+    <div className="border-t border-electric-cyan/30 bg-white p-4">
       <div className="flex gap-2">
         <textarea
           value={message}
@@ -39,18 +39,18 @@ export default function ChatInput({
           placeholder={placeholder}
           disabled={disabled}
           rows={1}
-          className="flex-1 resize-none rounded-lg border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
+          className="flex-1 resize-none rounded-lg border border-electric-cyan/30 px-4 py-3 font-inter focus:outline-none focus:ring-2 focus:ring-electric-cyan focus:border-transparent disabled:bg-light-data-gray disabled:cursor-not-allowed"
           style={{ minHeight: '52px', maxHeight: '120px' }}
         />
         <button
           onClick={handleSend}
           disabled={disabled || !message.trim()}
-          className="px-6 py-3 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+          className="px-6 py-3 bg-electric-cyan text-deep-indigo rounded-lg font-mont font-semibold hover:bg-deep-indigo hover:text-electric-cyan focus:outline-none focus:ring-2 focus:ring-electric-cyan focus:ring-offset-2 disabled:bg-light-data-gray disabled:cursor-not-allowed transition-colors"
         >
           Send
         </button>
       </div>
-      <div className="text-xs text-gray-500 mt-2">
+      <div className="text-xs text-charcoal-gray/70 mt-2 font-inter">
         Press Enter to send, Shift+Enter for new line
       </div>
     </div>

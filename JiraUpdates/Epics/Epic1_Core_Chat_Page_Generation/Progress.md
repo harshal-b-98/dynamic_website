@@ -14,16 +14,31 @@
 
 #### DYN-2: Story 1.1 - Persistent Chat Interface (13 pts)
 **Status**: ✅ Done
+**Jira Status**: Done
 **Completed**: 2025-10-09
-**Duration**: ~2 hours
+**Duration**: ~4 hours (2 sessions)
+
 **Key Deliverables**:
-- Database schema with dyn_ prefix (conversations, messages, sessions)
-- Iron Session configuration
-- POST /api/chat/message and GET /api/chat/history endpoints
-- ChatInterface, ChatMessage, ChatInput components
-- Home page integration
-**Commit**: 195e0ff
-**Session Log**: [Session02_DYN-2_ChatInterface.md](../../../SessionLogs/2025-10-09_Session02_DYN-2_ChatInterface.md)
+- ✅ **Landing Page** (7 sections): Hero, Pain Points, Product Features, Solution Architecture, Functions We Serve, CTA, Footer
+- ✅ **Chat Interface**: FloatingChatWidget (bottom-right persistent button), expandable chat window
+- ✅ **Database schema**: dyn_conversations, dyn_messages, dyn_sessions tables with RLS policies
+- ✅ **Iron Session**: Cookie-based session management (7-day expiry)
+- ✅ **API Routes**: POST /api/chat/message, GET /api/chat/history
+- ✅ **Components**: ChatInterface, ChatMessage, ChatInput, FloatingChatWidget
+- ✅ **ConsumerIQ Branding**: Deep Indigo, Electric Cyan, Refined Copper colors; Montserrat/Inter fonts
+- ✅ **KB Content Integration**: All copy from CIQ Brand Guidelines and Website Document
+
+**Technical Stack**:
+- Next.js 15.5.4, React 19.2.0, TypeScript, Tailwind CSS 4.1.14
+- Iron Session, Supabase PostgreSQL
+- 7 new files, 4 modified files, 778 lines added
+
+**Commits**: 195e0ff (chat), [latest] (landing page + branding)
+**Session Logs**:
+- [Session02_DYN-2_ChatInterface.md](../../../SessionLogs/2025-10-09_Session02_DYN-2_ChatInterface.md)
+- [Session03_DYN-2_LandingPage.md](../../../SessionLogs/2025-10-09_Session03_DYN-2_LandingPage.md)
+
+**Jira Comment**: Comprehensive implementation summary added with all deliverables, technical details, and next steps
 
 ### 🔄 In Progress Stories
 _None - Ready to start Story 1.2 (DYN-3)_
@@ -40,7 +55,7 @@ _None - Ready to start Story 1.2 (DYN-3)_
 
 ### 🎯 Week 1-2: Foundation
 **Target Date**: 2025-10-23
-- [ ] Chat interface deployed
+- [x] Chat interface deployed ✅
 - [ ] Intent classification working
 - [ ] Basic E2E flow functional
 
@@ -121,6 +136,23 @@ _None currently_
   - **Rationale**: User preference to move faster
   - **Impact**: Manual testing only, add tests later
 
+### 2025-10-09 (Session 03 - DYN-2 Landing Page Enhancement)
+- ✅ **Decision**: Transform from chat-focused to landing page with floating chat widget
+  - **Rationale**: User wanted professional landing page with persistent chat, not chat as main focus
+  - **Impact**: Chat becomes secondary feature, landing showcases product value
+
+- ✅ **Decision**: Use KB documents for all content and branding
+  - **Rationale**: Ensure accurate ConsumerIQ brand representation and messaging
+  - **Impact**: All content from CIQ Brand Guidelines and Website Document PDFs
+
+- ✅ **Decision**: Apply full ConsumerIQ brand identity
+  - **Rationale**: Create professional, industry-specific presence for beverage alcohol suppliers
+  - **Impact**: Deep Indigo, Electric Cyan, Refined Copper colors; Montserrat/Inter typography; industry-specific copy
+
+- ✅ **Decision**: Floating widget pattern over command bar
+  - **Rationale**: Better UX for persistent chat that doesn't obstruct landing page content
+  - **Impact**: Bottom-right chat button, expandable window design
+
 ---
 
 ## Next Session Tasks
@@ -136,5 +168,6 @@ _None currently_
 
 ---
 
-**Last Updated**: 2025-10-09 (after DYN-2 completion)
+**Last Updated**: 2025-10-09 (after DYN-2 completion + Jira update)
 **Next Update**: After Story 1.2 (DYN-3) completion
+**Jira Ticket**: https://twenty20systems.atlassian.net/browse/DYN-2 (Status: Done ✅)

@@ -14,17 +14,17 @@ export default function ChatMessage({ role, content, timestamp }: ChatMessagePro
       <div
         className={`max-w-[80%] rounded-lg px-4 py-3 ${
           isUser
-            ? 'bg-indigo-600 text-white'
-            : 'bg-gray-100 text-gray-900 border border-gray-200'
+            ? 'bg-electric-cyan text-deep-indigo'
+            : 'bg-light-data-gray text-charcoal-gray border border-electric-cyan/30'
         }`}
       >
-        <div className="text-sm leading-relaxed whitespace-pre-wrap break-words">
+        <div className="text-sm font-inter leading-relaxed whitespace-pre-wrap break-words">
           {content}
         </div>
         {timestamp && (
           <div
-            className={`text-xs mt-1 ${
-              isUser ? 'text-indigo-200' : 'text-gray-500'
+            className={`text-xs mt-1 font-inter ${
+              isUser ? 'text-deep-indigo/70' : 'text-charcoal-gray/70'
             }`}
           >
             {new Date(timestamp).toLocaleTimeString()}

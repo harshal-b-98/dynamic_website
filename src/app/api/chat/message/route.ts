@@ -3,6 +3,7 @@ import { getIronSession } from 'iron-session'
 import { cookies } from 'next/headers'
 import { sessionOptions, SessionData } from '@/lib/session'
 import { supabaseAdmin } from '@/lib/supabase'
+import { anthropic, DEFAULT_CLAUDE_PARAMS } from '@/lib/claude'
 import { v4 as uuidv4 } from 'uuid'
 
 export async function POST(request: NextRequest) {
@@ -56,14 +57,35 @@ export async function POST(request: NextRequest) {
       await session.save()
     }
 
-    // Store user message
+    // Classify intent using internal API call
+    const intentResponse = await fetch(`${request.nextUrl.origin}/api/intent/classify`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message })
+    })
+
+    let intent = 'general_conversation'
+    let intentMetadata = {}
+
+    if (intentResponse.ok) {
+      const intentData = await intentResponse.json()
+      intent = intentData.classification.intent
+      intentMetadata = {
+        intent: intentData.classification.intent,
+        confidence: intentData.classification.confidence,
+        reasoning: intentData.classification.reasoning,
+        entities: intentData.classification.entities
+      }
+    }
+
+    // Store user message with intent metadata
     const { data: userMessage, error: userMsgError } = await supabaseAdmin
       .from('dyn_messages')
       .insert({
         conversation_id: activeConversationId,
         role: 'user',
         content: message,
-        metadata: {}
+        metadata: intentMetadata
       })
       .select()
       .single()
@@ -76,8 +98,50 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Generate AI response (placeholder for now, will integrate with Anthropic in next story)
-    const aiResponse = `Thank you for your message: "${message}". I'm currently being set up to provide intelligent responses. Full AI capabilities will be available in the next development phase.`
+    // Get conversation history for context
+    const { data: history } = await supabaseAdmin
+      .from('dyn_messages')
+      .select('role, content')
+      .eq('conversation_id', activeConversationId)
+      .order('created_at', { ascending: true })
+      .limit(10)
+
+    // Build conversation history for Claude
+    const conversationHistory = (history || []).map((msg: { role: string; content: string }) => ({
+      role: msg.role === 'user' ? 'user' : 'assistant',
+      content: msg.content
+    }))
+
+    // Generate AI response using Claude
+    const systemPrompt = `You are ConsumerIQ Assistant, an AI helper for ConsumerIQ - a beverage alcohol analytics platform for U.S. suppliers.
+
+Your role:
+- Help users understand ConsumerIQ features and capabilities
+- Answer questions about beverage alcohol data, market intelligence, and analytics
+- Guide users toward scheduling demos or contacting sales when appropriate
+- Be professional, knowledgeable, and concise
+
+Key ConsumerIQ capabilities:
+- Natural Language Analytics: Plain English queries for data insights
+- Predictive Intelligence: COLA approval forecasting, market trend prediction
+- Competitive Launch Tracking: Monitor TTB filings and competitor innovations
+- Distributor Performance: Real-time distributor health scoring and analytics
+- Trade Spend ROI: Link promotions to field execution and sales outcomes
+- Compliance Monitoring: AI-powered label review and approval tracking
+
+Detected intent: ${intent}
+
+Respond helpfully based on the user's intent. Keep responses concise (2-3 paragraphs max).`
+
+    const claudeResponse = await anthropic.messages.create({
+      ...DEFAULT_CLAUDE_PARAMS,
+      system: systemPrompt,
+      messages: conversationHistory as any
+    })
+
+    const aiResponse = claudeResponse.content[0].type === 'text'
+      ? claudeResponse.content[0].text
+      : 'I apologize, I encountered an error generating a response.'
 
     // Store assistant message
     const { data: assistantMessage, error: assistantMsgError } = await supabaseAdmin
@@ -86,7 +150,11 @@ export async function POST(request: NextRequest) {
         conversation_id: activeConversationId,
         role: 'assistant',
         content: aiResponse,
-        metadata: {}
+        metadata: {
+          model: DEFAULT_CLAUDE_PARAMS.model,
+          input_tokens: claudeResponse.usage.input_tokens,
+          output_tokens: claudeResponse.usage.output_tokens
+        }
       })
       .select()
       .single()

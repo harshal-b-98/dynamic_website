@@ -2,23 +2,23 @@ import FloatingChatWidget from '@/components/organisms/FloatingChatWidget'
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-surface-white">
       {/* Navigation */}
-      <nav className="border-b border-gray-200">
+      <nav className="border-b border-light-data-gray bg-surface-white">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">C</span>
+              <div className="w-10 h-10 bg-deep-indigo rounded flex items-center justify-center">
+                <span className="text-electric-cyan font-mont font-bold text-xl">C</span>
               </div>
-              <span className="text-xl font-bold text-gray-900">Consumer IQ</span>
+              <span className="text-2xl font-mont font-bold text-deep-indigo">ConsumerIQ</span>
             </div>
             <div className="hidden md:flex items-center gap-8">
-              <a href="#features" className="text-gray-600 hover:text-gray-900 transition-colors">Features</a>
-              <a href="#how-it-works" className="text-gray-600 hover:text-gray-900 transition-colors">How It Works</a>
-              <a href="#use-cases" className="text-gray-600 hover:text-gray-900 transition-colors">Use Cases</a>
-              <button className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
-                Get Started
+              <a href="#features" className="text-charcoal-gray hover:text-deep-indigo transition-colors font-inter">Features</a>
+              <a href="#functions" className="text-charcoal-gray hover:text-deep-indigo transition-colors font-inter">Functions</a>
+              <a href="#solution" className="text-charcoal-gray hover:text-deep-indigo transition-colors font-inter">Solution</a>
+              <button className="px-5 py-2.5 bg-electric-cyan text-deep-indigo font-inter font-semibold rounded-lg hover:bg-deep-indigo hover:text-electric-cyan transition-colors">
+                Talk to Our Team
               </button>
             </div>
           </div>
@@ -26,275 +26,412 @@ export default function Home() {
       </nav>
 
       {/* Hero Section */}
-      <section className="container mx-auto px-6 py-20 md:py-32">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="inline-block mb-4 px-4 py-2 bg-indigo-50 text-indigo-600 rounded-full text-sm font-medium">
-            ✨ AI-Powered Dynamic Content Generation
-          </div>
-          <h1 className="text-5xl md:text-7xl font-bold text-gray-900 mb-6 leading-tight">
-            Transform Conversations into
-            <span className="block bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-              Personalized Experiences
-            </span>
-          </h1>
-          <p className="text-xl text-gray-600 mb-10 max-w-2xl mx-auto leading-relaxed">
-            Consumer IQ dynamically generates web pages, content, and UI components in real-time based on natural conversations—delivering exactly what your visitors need, when they need it.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="px-8 py-4 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-all shadow-lg hover:shadow-xl text-lg font-medium">
-              Start Chatting Now
-            </button>
-            <button className="px-8 py-4 bg-white text-gray-900 rounded-lg hover:bg-gray-50 transition-all border-2 border-gray-200 text-lg font-medium">
-              Watch Demo →
-            </button>
-          </div>
-        </div>
-
-        {/* Hero Visual */}
-        <div className="mt-16 max-w-5xl mx-auto">
-          <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-gray-200">
-            <div className="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 p-1">
-              <div className="bg-white rounded-xl p-8">
-                <div className="grid md:grid-cols-2 gap-8">
-                  <div className="space-y-4">
-                    <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                      <div className="flex items-start gap-3">
-                        <div className="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center flex-shrink-0">
-                          <span className="text-indigo-600 text-sm">👤</span>
-                        </div>
-                        <div className="flex-1">
-                          <p className="text-gray-700">"I need help choosing the right CRM for my startup"</p>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="bg-indigo-50 rounded-lg p-4 border border-indigo-200">
-                      <div className="flex items-start gap-3">
-                        <div className="w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center flex-shrink-0">
-                          <span className="text-white text-sm">🤖</span>
-                        </div>
-                        <div className="flex-1">
-                          <p className="text-gray-700 text-sm mb-2">Analyzing your needs...</p>
-                          <div className="space-y-2">
-                            <div className="h-2 bg-indigo-200 rounded-full animate-pulse"></div>
-                            <div className="h-2 bg-indigo-200 rounded-full w-3/4 animate-pulse"></div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="bg-gradient-to-br from-gray-50 to-white rounded-lg p-6 border border-gray-200">
-                    <div className="text-xs text-gray-500 mb-2">Generated Page Preview</div>
-                    <div className="space-y-3">
-                      <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-                      <div className="h-3 bg-gray-100 rounded"></div>
-                      <div className="h-3 bg-gray-100 rounded w-5/6"></div>
-                      <div className="grid grid-cols-2 gap-2 mt-4">
-                        <div className="h-16 bg-indigo-100 rounded"></div>
-                        <div className="h-16 bg-purple-100 rounded"></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+      <section className="bg-gradient-to-b from-deep-indigo to-black py-20 md:py-32">
+        <div className="container mx-auto px-6">
+          <div className="max-w-5xl mx-auto text-center">
+            <h1 className="text-5xl md:text-7xl font-mont font-extrabold text-surface-white mb-6 leading-tight">
+              Stop Guessing. Start Winning.
+            </h1>
+            <p className="text-xl md:text-2xl text-light-data-gray mb-10 leading-relaxed font-inter max-w-4xl mx-auto">
+              Spot opportunities early. Prove promotional impact. Outmaneuver competitors. ConsumerIQ gives U.S. beverage alcohol suppliers real-time market intelligence—without the data chaos.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button className="px-8 py-4 bg-electric-cyan text-deep-indigo rounded-lg font-mont font-semibold text-lg hover:bg-surface-white transition-all shadow-lg">
+                Explore Solutions
+              </button>
+              <button className="px-8 py-4 bg-transparent text-surface-white rounded-lg border-2 border-electric-cyan font-mont font-semibold text-lg hover:bg-electric-cyan hover:text-deep-indigo transition-all">
+                See How It Works
+              </button>
+              <button className="px-8 py-4 bg-deep-indigo text-electric-cyan rounded-lg border-2 border-electric-cyan font-mont font-semibold text-lg hover:bg-electric-cyan hover:text-deep-indigo transition-all">
+                Talk to Our Team
+              </button>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section id="features" className="py-20 bg-gray-50">
+      {/* Pain Points Section */}
+      <section className="py-20 bg-light-data-gray">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Why Choose Consumer IQ?
+            <h2 className="text-4xl md:text-5xl font-mont font-bold text-deep-indigo mb-4">
+              The Real Cost of Fragmented Data
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Move beyond static websites. Create dynamic, personalized experiences that adapt to each visitor.
-            </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            <div className="bg-white rounded-xl p-8 shadow-sm hover:shadow-md transition-shadow">
-              <div className="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mb-4">
-                <svg className="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">Real-Time Generation</h3>
-              <p className="text-gray-600">
-                Pages and content generated instantly based on user intent. No pre-built templates required.
+          <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+            <div className="bg-surface-white rounded-xl p-8 shadow-sm">
+              <h3 className="text-2xl font-mont font-bold text-deep-indigo mb-4">Delayed, Conflicting Reports</h3>
+              <p className="text-charcoal-gray font-inter leading-relaxed">
+                Distributor data arrives on the 15th. Retail scans on the 20th. By the time you reconcile them, the market has moved and opportunities are gone.
               </p>
             </div>
 
-            <div className="bg-white rounded-xl p-8 shadow-sm hover:shadow-md transition-shadow">
-              <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
-                <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">Persona Detection</h3>
-              <p className="text-gray-600">
-                Automatically identifies visitor personas and tailors content, messaging, and UI accordingly.
+            <div className="bg-surface-white rounded-xl p-8 shadow-sm">
+              <h3 className="text-2xl font-mont font-bold text-deep-indigo mb-4">Invisible Execution</h3>
+              <p className="text-charcoal-gray font-inter leading-relaxed">
+                You approved the promotion and paid for displays—but did they go up? Without proof linking field execution to sales velocity, <span className="text-refined-copper font-semibold">trade dollars disappear without accountability</span>.
               </p>
             </div>
 
-            <div className="bg-white rounded-xl p-8 shadow-sm hover:shadow-md transition-shadow">
-              <div className="w-12 h-12 bg-pink-100 rounded-lg flex items-center justify-center mb-4">
-                <svg className="w-6 h-6 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">RAG-Powered Accuracy</h3>
-              <p className="text-gray-600">
-                Retrieval-augmented generation ensures responses are grounded in your actual content and data.
+            <div className="bg-surface-white rounded-xl p-8 shadow-sm">
+              <h3 className="text-2xl font-mont font-bold text-deep-indigo mb-4">Reactive Innovation</h3>
+              <p className="text-charcoal-gray font-inter leading-relaxed">
+                Traditional research takes months. Your COLA approval process feels like a black box. Every delay costs a seasonal window while <span className="text-risk-red font-semibold">competitors capture whitespace first</span>.
               </p>
             </div>
 
-            <div className="bg-white rounded-xl p-8 shadow-sm hover:shadow-md transition-shadow">
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-                <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+            <div className="bg-surface-white rounded-xl p-8 shadow-sm">
+              <h3 className="text-2xl font-mont font-bold text-deep-indigo mb-4">The IT Bottleneck</h3>
+              <p className="text-charcoal-gray font-inter leading-relaxed">
+                Analytics teams spend 70% of their time cleaning data instead of generating insights. Sales and marketing make gut-feel decisions because they can't trust the numbers—or wait weeks for answers.
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-12 text-center max-w-4xl mx-auto">
+            <p className="text-lg font-inter text-charcoal-gray">
+              Industry research shows <span className="text-refined-copper font-bold text-xl">bad data costs beverage suppliers 15-25% in lost revenue annually</span>. That's missed market share, wasted trade spend, and strategic opportunities handed to faster-moving competitors.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Product Features Section */}
+      <section id="features" className="py-20 bg-deep-indigo">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-mont font-bold text-surface-white mb-4">
+              Intelligence Built for How Your Team Actually Works
+            </h2>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+            {/* Natural Language Analytics */}
+            <div className="bg-deep-indigo border-2 border-electric-cyan/30 rounded-xl p-8 hover:border-electric-cyan transition-all">
+              <div className="w-14 h-14 bg-electric-cyan/10 rounded-lg flex items-center justify-center mb-6">
+                <svg className="w-8 h-8 text-electric-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">Persistent Conversations</h3>
-              <p className="text-gray-600">
-                Chat context persists across pages, creating a seamless, continuous user experience.
+              <h3 className="text-xl font-mont font-bold text-electric-cyan mb-3">Natural Language Analytics</h3>
+              <p className="text-surface-white font-inter mb-4 leading-relaxed">
+                Ask questions in plain English. Get instant answers. "Which distributors are underperforming in the Southeast?" "Show me RTD launches in the last 60 days." No SQL. No waiting for IT. No conflicting spreadsheets.
+              </p>
+              <p className="text-electric-cyan font-inter font-semibold">
+                Value: Transform weeks of data wrangling into seconds of insight generation.
               </p>
             </div>
 
-            <div className="bg-white rounded-xl p-8 shadow-sm hover:shadow-md transition-shadow">
-              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
-                <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            {/* Predictive Intelligence */}
+            <div className="bg-deep-indigo border-2 border-electric-cyan/30 rounded-xl p-8 hover:border-electric-cyan transition-all">
+              <div className="w-14 h-14 bg-electric-cyan/10 rounded-lg flex items-center justify-center mb-6">
+                <svg className="w-8 h-8 text-electric-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-mont font-bold text-electric-cyan mb-3">Predictive Intelligence</h3>
+              <p className="text-surface-white font-inter mb-4 leading-relaxed">
+                Our AI doesn't just report what happened—it forecasts what's coming. Predict COLA approval timelines before submission. Identify emerging category opportunities before competitors move. Flag distributor performance risks before they impact your numbers.
+              </p>
+              <p className="text-electric-cyan font-inter font-semibold">
+                Value: Make proactive decisions with confidence, not reactive pivots in crisis mode.
+              </p>
+            </div>
+
+            {/* Unified Performance Dashboards */}
+            <div className="bg-deep-indigo border-2 border-electric-cyan/30 rounded-xl p-8 hover:border-electric-cyan transition-all">
+              <div className="w-14 h-14 bg-electric-cyan/10 rounded-lg flex items-center justify-center mb-6">
+                <svg className="w-8 h-8 text-electric-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">Lead Capture Intelligence</h3>
-              <p className="text-gray-600">
-                Automatically identifies high-intent visitors and captures leads at the perfect moment.
+              <h3 className="text-xl font-mont font-bold text-electric-cyan mb-3">Unified Performance Dashboards</h3>
+              <p className="text-surface-white font-inter mb-4 leading-relaxed">
+                Sales tracks distributor health and territory performance. Marketing measures campaign lift and promo ROI. IT monitors data quality and feed latency. Everyone sees the same numbers, updated in near real-time.
+              </p>
+              <p className="text-electric-cyan font-inter font-semibold">
+                Value: Eliminate the "which report is right?" debates and accelerate decision velocity.
               </p>
             </div>
 
-            <div className="bg-white rounded-xl p-8 shadow-sm hover:shadow-md transition-shadow">
-              <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mb-4">
-                <svg className="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
+            {/* Competitive Launch Tracking */}
+            <div className="bg-deep-indigo border-2 border-electric-cyan/30 rounded-xl p-8 hover:border-electric-cyan transition-all">
+              <div className="w-14 h-14 bg-electric-cyan/10 rounded-lg flex items-center justify-center mb-6">
+                <svg className="w-8 h-8 text-electric-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">CRM Integration</h3>
-              <p className="text-gray-600">
-                Seamlessly syncs with Salesforce, HubSpot, and Pipedrive to enrich your customer data.
+              <h3 className="text-xl font-mont font-bold text-electric-cyan mb-3">Competitive Launch Tracking</h3>
+              <p className="text-surface-white font-inter mb-4 leading-relaxed">
+                Monitor TTB filings, social signals, and menu additions to detect competitor innovations early. Analyze category trends and identify whitespace opportunities while they're still open.
+              </p>
+              <p className="text-electric-cyan font-inter font-semibold">
+                Value: Launch smarter, faster, and into less crowded spaces.
+              </p>
+            </div>
+
+            {/* Execution Verification Engine */}
+            <div className="bg-deep-indigo border-2 border-electric-cyan/30 rounded-xl p-8 hover:border-electric-cyan transition-all">
+              <div className="w-14 h-14 bg-electric-cyan/10 rounded-lg flex items-center justify-center mb-6">
+                <svg className="w-8 h-8 text-electric-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-mont font-bold text-electric-cyan mb-3">Execution Verification Engine</h3>
+              <p className="text-surface-white font-inter mb-4 leading-relaxed">
+                Link trade promotion plans to field execution photos and sales outcomes. Verify display compliance, measure promotional lift, and calculate true trade spend ROI—all in one workflow.
+              </p>
+              <p className="text-electric-cyan font-inter font-semibold">
+                Value: Turn trade dollars into measurable revenue instead of unverifiable expenses.
+              </p>
+            </div>
+
+            {/* Automated Compliance Monitoring */}
+            <div className="bg-deep-indigo border-2 border-electric-cyan/30 rounded-xl p-8 hover:border-electric-cyan transition-all">
+              <div className="w-14 h-14 bg-electric-cyan/10 rounded-lg flex items-center justify-center mb-6">
+                <svg className="w-8 h-8 text-electric-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-mont font-bold text-electric-cyan mb-3">Automated Compliance Monitoring</h3>
+              <p className="text-surface-white font-inter mb-4 leading-relaxed">
+                AI-powered label review flags potential compliance issues before submission. Track approval timelines, benchmark against historical patterns, and receive alerts when filings move through the process.
+              </p>
+              <p className="text-electric-cyan font-inter font-semibold">
+                Value: Reduce time-to-market and eliminate costly resubmissions.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* How It Works Section */}
-      <section id="how-it-works" className="py-20">
+      {/* Solution Architecture Section */}
+      <section id="solution" className="py-20 bg-surface-white">
         <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              How It Works
+          <div className="text-center mb-16 max-w-4xl mx-auto">
+            <h2 className="text-4xl md:text-5xl font-mont font-bold text-deep-indigo mb-6">
+              One Platform. One Source of Truth. Zero Guesswork.
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              From conversation to conversion in three simple steps
+            <p className="text-xl text-charcoal-gray font-inter leading-relaxed">
+              ConsumerIQ eliminates data fragmentation by creating a single, mastered data spine specifically designed for beverage alcohol suppliers.
             </p>
           </div>
 
           <div className="max-w-5xl mx-auto">
-            <div className="grid md:grid-cols-3 gap-8">
-              <div className="text-center">
-                <div className="w-16 h-16 bg-indigo-600 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">
-                  1
-                </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-3">Visitor Starts Chatting</h3>
-                <p className="text-gray-600">
-                  User initiates a conversation about their needs, questions, or goals through our AI assistant.
+            <div className="grid md:grid-cols-2 gap-6 mb-12">
+              <div className="bg-light-data-gray rounded-xl p-8">
+                <h3 className="text-xl font-mont font-bold text-deep-indigo mb-4 flex items-center gap-3">
+                  <span className="w-10 h-10 bg-electric-cyan rounded-lg flex items-center justify-center text-deep-indigo font-bold">1</span>
+                  Regulatory Intelligence
+                </h3>
+                <p className="text-charcoal-gray font-inter leading-relaxed">
+                  TTB COLA filings, state licensing data, competitive label tracking
                 </p>
               </div>
 
-              <div className="text-center">
-                <div className="w-16 h-16 bg-purple-600 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">
-                  2
-                </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-3">AI Analyzes Intent</h3>
-                <p className="text-gray-600">
-                  Our AI classifies intent, detects persona, and retrieves relevant content from your knowledge base.
+              <div className="bg-light-data-gray rounded-xl p-8">
+                <h3 className="text-xl font-mont font-bold text-deep-indigo mb-4 flex items-center gap-3">
+                  <span className="w-10 h-10 bg-electric-cyan rounded-lg flex items-center justify-center text-deep-indigo font-bold">2</span>
+                  Commercial Performance
+                </h3>
+                <p className="text-charcoal-gray font-inter leading-relaxed">
+                  Distributor depletions from VIP and Encompass, retail scan and POS data
                 </p>
               </div>
 
-              <div className="text-center">
-                <div className="w-16 h-16 bg-pink-600 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">
-                  3
-                </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-3">Page Generates Instantly</h3>
-                <p className="text-gray-600">
-                  A personalized page with tailored content and UI components appears—perfectly matched to their needs.
+              <div className="bg-light-data-gray rounded-xl p-8">
+                <h3 className="text-xl font-mont font-bold text-deep-indigo mb-4 flex items-center gap-3">
+                  <span className="w-10 h-10 bg-electric-cyan rounded-lg flex items-center justify-center text-deep-indigo font-bold">3</span>
+                  Market Signals
+                </h3>
+                <p className="text-charcoal-gray font-inter leading-relaxed">
+                  On-premise menu data, social sentiment, industry publications, geographic mapping
                 </p>
               </div>
+
+              <div className="bg-light-data-gray rounded-xl p-8">
+                <h3 className="text-xl font-mont font-bold text-deep-indigo mb-4 flex items-center gap-3">
+                  <span className="w-10 h-10 bg-electric-cyan rounded-lg flex items-center justify-center text-deep-indigo font-bold">4</span>
+                  Execution Verification
+                </h3>
+                <p className="text-charcoal-gray font-inter leading-relaxed">
+                  Field photos, trade promotion tracking, compliance monitoring
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-deep-indigo rounded-2xl p-10 text-center">
+              <p className="text-2xl text-surface-white font-inter leading-relaxed">
+                The result? <span className="text-electric-cyan font-mont font-bold">Role-specific intelligence delivered in real-time through AI-powered analytics</span>—so every team operates from the same reliable foundation.
+              </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Use Cases Section */}
-      <section id="use-cases" className="py-20 bg-gray-50">
+      {/* Functions We Serve Section */}
+      <section id="functions" className="py-20 bg-light-data-gray">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Perfect For
+            <h2 className="text-4xl md:text-5xl font-mont font-bold text-deep-indigo mb-4">
+              Precision-Built Intelligence for Every Commercial Function
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Industries and teams that need dynamic, personalized web experiences
-            </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-            <div className="bg-white rounded-xl p-6 shadow-sm">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">🏢 B2B SaaS Companies</h3>
-              <p className="text-gray-600">Generate product pages tailored to different personas—technical buyers, executives, end-users.</p>
+          <div className="max-w-6xl mx-auto space-y-12">
+            {/* Sales & Commercial Teams */}
+            <div className="bg-surface-white rounded-2xl p-10 shadow-sm">
+              <h3 className="text-3xl font-mont font-bold text-deep-indigo mb-6">For Sales & Commercial Teams</h3>
+              <p className="text-lg text-charcoal-gray font-inter mb-6 leading-relaxed">
+                Distributors control your retail access. You need objective proof that promotions drive sales. Your team needs to know which accounts to prioritize and which territories are underperforming—before the quarterly review reveals the damage.
+              </p>
+
+              <div className="bg-light-data-gray rounded-xl p-6 mb-6">
+                <h4 className="text-xl font-mont font-semibold text-deep-indigo mb-4">What You Get:</h4>
+                <ul className="space-y-3 text-charcoal-gray font-inter">
+                  <li className="flex items-start gap-3">
+                    <span className="text-refined-copper mt-1">●</span>
+                    <span>Real-time distributor performance dashboards with health scoring</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-refined-copper mt-1">●</span>
+                    <span>Territory analytics linking field execution to sales velocity</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-refined-copper mt-1">●</span>
+                    <span>Display compliance verification with photo-validated execution</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-refined-copper mt-1">●</span>
+                    <span>Chain distribution tracking across every SKU and account</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-refined-copper mt-1">●</span>
+                    <span>Pricing compliance monitoring to protect brand positioning</span>
+                  </li>
+                </ul>
+              </div>
+
+              <p className="text-lg font-mont font-semibold text-deep-indigo">
+                The Outcome? <span className="text-refined-copper">Hold distributors accountable with data. Optimize trade spend based on measurable ROI. Hit revenue targets by focusing resources where they matter most.</span>
+              </p>
             </div>
 
-            <div className="bg-white rounded-xl p-6 shadow-sm">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">🛒 E-commerce Brands</h3>
-              <p className="text-gray-600">Create personalized shopping experiences based on customer preferences and browsing behavior.</p>
+            {/* Marketing & Innovation Teams */}
+            <div className="bg-deep-indigo rounded-2xl p-10 shadow-sm">
+              <h3 className="text-3xl font-mont font-bold text-surface-white mb-6">For Marketing & Innovation Teams</h3>
+              <p className="text-lg text-surface-white font-inter mb-6 leading-relaxed">
+                Campaigns need to perform. New products need to launch on time. You're expected to spot trends early, measure promo effectiveness, and find whitespace opportunities—all while traditional research takes months and COLA approvals feel like black boxes.
+              </p>
+
+              <div className="bg-deep-indigo/50 border-2 border-electric-cyan/30 rounded-xl p-6 mb-6">
+                <h4 className="text-xl font-mont font-semibold text-electric-cyan mb-4">What You Get:</h4>
+                <ul className="space-y-3 text-surface-white font-inter">
+                  <li className="flex items-start gap-3">
+                    <span className="text-electric-cyan mt-1">●</span>
+                    <span>AI-powered COLA timeline predictions and compliance risk assessment</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-electric-cyan mt-1">●</span>
+                    <span>Competitive launch intelligence from regulatory filings and market signals</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-electric-cyan mt-1">●</span>
+                    <span>Campaign lift measurement tied to actual execution and sales data</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-electric-cyan mt-1">●</span>
+                    <span>Social sentiment tracking correlated with purchase behavior</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-electric-cyan mt-1">●</span>
+                    <span>Category trend analysis combining retail, on-premise, and regulatory data</span>
+                  </li>
+                </ul>
+              </div>
+
+              <p className="text-lg font-mont font-semibold text-surface-white">
+                The Outcome? <span className="text-electric-cyan">Launch products faster with fewer regulatory surprises. Identify emerging opportunities before competitors. Prove marketing ROI with hard data, not gut feel.</span>
+              </p>
             </div>
 
-            <div className="bg-white rounded-xl p-6 shadow-sm">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">🎓 Education Platforms</h3>
-              <p className="text-gray-600">Dynamically recommend courses and learning paths based on student goals and skill levels.</p>
-            </div>
+            {/* Commercial IT & Analytics Teams */}
+            <div className="bg-surface-white rounded-2xl p-10 shadow-sm">
+              <h3 className="text-3xl font-mont font-bold text-deep-indigo mb-6">For Commercial IT & Analytics Teams</h3>
+              <p className="text-lg text-charcoal-gray font-inter mb-6 leading-relaxed">
+                Fragmented data sources, inconsistent formats, and endless data quality issues consume your time. Business teams want self-service analytics, but they can't trust the underlying data. You're seen as the bottleneck—not by choice, but by necessity.
+              </p>
 
-            <div className="bg-white rounded-xl p-6 shadow-sm">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">💼 Consulting Firms</h3>
-              <p className="text-gray-600">Showcase relevant case studies and services based on prospect industry and pain points.</p>
+              <div className="bg-light-data-gray rounded-xl p-6 mb-6">
+                <h4 className="text-xl font-mont font-semibold text-deep-indigo mb-4">What You Get:</h4>
+                <ul className="space-y-3 text-charcoal-gray font-inter">
+                  <li className="flex items-start gap-3">
+                    <span className="text-data-green mt-1">●</span>
+                    <span>Pre-built integrations with major distributor, retail, and regulatory data sources</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-data-green mt-1">●</span>
+                    <span>Automated master data management with AI-powered matching and deduplication</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-data-green mt-1">●</span>
+                    <span>Self-service analytics tools that don't sacrifice governance</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-data-green mt-1">●</span>
+                    <span>Real-time data quality monitoring with anomaly detection</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-data-green mt-1">●</span>
+                    <span>Rapid feed onboarding with no-code configuration</span>
+                  </li>
+                </ul>
+              </div>
+
+              <p className="text-lg font-mont font-semibold text-deep-indigo">
+                The Outcome? <span className="text-data-green">Shift from data janitor to strategic enabler. Deliver reliable insights in hours, not weeks. Build trust through consistent, accurate, real-time analytics.</span>
+              </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-20">
+      {/* Final CTA Banner */}
+      <section className="py-20 bg-gradient-to-r from-electric-cyan to-electric-cyan">
         <div className="container mx-auto px-6">
-          <div className="max-w-4xl mx-auto bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-12 text-center text-white">
-            <h2 className="text-4xl font-bold mb-4">
-              Ready to Transform Your Website?
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-4xl md:text-5xl font-mont font-bold text-deep-indigo mb-6">
+              Ready to Turn Data Chaos into Commercial Advantage?
             </h2>
-            <p className="text-xl mb-8 text-indigo-100">
-              Start creating dynamic, personalized experiences today
+            <p className="text-xl text-surface-white mb-10 font-inter leading-relaxed">
+              The U.S. beverage alcohol market rewards speed, precision, and intelligence. ConsumerIQ delivers the unified analytics foundation your team needs to compete—and win.
             </p>
-            <button className="px-8 py-4 bg-white text-indigo-600 rounded-lg hover:bg-gray-100 transition-all shadow-lg hover:shadow-xl text-lg font-medium">
-              Get Started Free
-            </button>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button className="px-10 py-4 bg-surface-white text-deep-indigo rounded-lg font-mont font-bold text-lg hover:bg-deep-indigo hover:text-surface-white hover:border-2 hover:border-surface-white transition-all shadow-lg">
+                Schedule a Demo
+              </button>
+              <button className="px-10 py-4 bg-deep-indigo text-surface-white rounded-lg border-2 border-deep-indigo font-mont font-bold text-lg hover:bg-surface-white hover:text-deep-indigo transition-all">
+                View FAQ
+              </button>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-gray-200 py-12">
+      <footer className="border-t border-light-data-gray py-12 bg-surface-white">
         <div className="container mx-auto px-6">
-          <div className="text-center text-gray-600">
-            <p>&copy; 2025 Consumer IQ. All rights reserved.</p>
+          <div className="flex flex-col md:flex-row items-center justify-between">
+            <div className="flex items-center gap-2 mb-4 md:mb-0">
+              <div className="w-8 h-8 bg-deep-indigo rounded flex items-center justify-center">
+                <span className="text-electric-cyan font-mont font-bold text-lg">C</span>
+              </div>
+              <span className="text-xl font-mont font-bold text-deep-indigo">ConsumerIQ</span>
+            </div>
+            <div className="text-charcoal-gray font-inter">
+              <p>&copy; 2025 ConsumerIQ. All rights reserved.</p>
+            </div>
           </div>
         </div>
       </footer>
