@@ -74,24 +74,149 @@ Retrieve conversation history
 **Database Tables**: dyn_conversations, dyn_messages
 
 ### Intent Classification
-_Coming in Epic 1: Story 1.2_
+✅ **Implemented in DYN-3 (Story 1.2)**
+
+#### POST /api/intent/classify
+Classify user message intent using Claude AI
 
 ```typescript
-// POST /api/intent/classify
-// Classify user intent from message
-// Body: { message: string, context?: ConversationContext }
-// Response: { intent: IntentType, confidence: number, entities: Entity[] }
+// Request Body
+{
+  message: string    // User message to classify
+}
+
+// Response
+{
+  success: boolean
+  classification: {
+    intent: IntentType        // Classified intent (e.g., 'product_inquiry')
+    confidence: number        // Confidence score (0-1)
+    reasoning: string         // Explanation of classification
+    entities: string[]        // Extracted entities from message
+  }
+  usage: {
+    input_tokens: number
+    output_tokens: number
+  }
+}
+
+// Error Response
+{
+  error: string
+  details?: string
+}
 ```
+
+**Authentication**: None (internal API)
+**LLM Model**: claude-3-haiku-20240307
+**Average Response Time**: ~1s
+
+**Intent Types**: `product_inquiry`, `data_query`, `technical_support`, `demo_request`, `general_conversation`, `compliance_question`, `competitor_analysis`, `distributor_inquiry`, `pricing_inquiry`, `integration_question`
+
+---
 
 ### Page Generation
-_Coming in Epic 1: Story 1.3_
+✅ **Implemented in DYN-4 (Story 1.3)**
+
+#### POST /api/page/generate
+Generate dynamic page specification using LLM
 
 ```typescript
-// POST /api/page/generate
-// Generate dynamic page based on intent
-// Body: { intent: string, context: any, personaData?: PersonaProfile }
-// Response: { pageSpec: PageSpecification, components: Component[] }
+// Request Body
+{
+  query: string                     // User's original query
+  intent: string                    // Classified intent
+  conversationHistory?: Array<{     // Optional: recent conversation
+    role: 'user' | 'assistant'
+    content: string
+  }>
+  persona?: string                  // Optional: detected persona
+  sessionId: string                 // Required: session identifier
+}
+
+// Response
+{
+  success: boolean
+  pageSpec?: PageSpecification      // Generated page specification
+  cached?: boolean                  // Whether result was from cache
+  error?: string
+}
+
+// PageSpecification Structure
+{
+  id: string
+  type: 'landing' | 'feature' | 'comparison' | 'dashboard' | 'custom'
+  metadata: {
+    title: string
+    description: string
+    keywords: string[]
+    generatedFor: string            // Original query
+  }
+  layout: {
+    type: 'single-column' | 'two-column' | 'grid' | 'custom'
+    spacing?: 'compact' | 'normal' | 'spacious'
+    components: ComponentSpec[]     // Array of component specifications
+  }
+  navigation?: {
+    breadcrumbs?: Breadcrumb[]
+    relatedQueries?: string[]
+    nextSteps?: string[]
+  }
+  generatedAt: Date
+  generatedBy: 'llm'
+  llmModel: string                  // e.g., 'claude-3-haiku-20240307'
+  generationTime: number            // Milliseconds
+}
+
+// ComponentSpec Structure
+{
+  id: string                        // Unique instance ID
+  componentType: string             // Component registry key
+  order: number                     // Render order (0-indexed)
+  props: Record<string, any>        // Component-specific props
+  content: any                      // Component content
+  styling?: {
+    variant?: string
+    size?: 'sm' | 'md' | 'lg' | 'xl'
+    theme?: 'light' | 'dark' | 'brand'
+    className?: string
+  }
+  metadata?: {
+    purpose?: string
+    priority?: 'primary' | 'secondary' | 'supporting'
+  }
+}
+
+// Error Response
+{
+  success: false
+  error: string                     // User-friendly error message
+}
 ```
+
+**Authentication**: None (requires valid sessionId)
+**LLM Model**: claude-3-haiku-20240307
+**Target Performance**: <2s (P90), <3s (P99)
+**Current Performance**: ~15s (first generation), <100ms (cached)
+**Timeout**: 15 seconds maximum
+**Retry Logic**: 2 retries with exponential backoff
+**Caching**: 30-minute TTL, 100 entry max
+**Component Library**: 25+ components across 10 categories
+
+**Features**:
+- LLM-driven page generation with full component flexibility
+- Structured JSON output with validation
+- Automatic component registry verification
+- In-memory caching for common queries
+- Comprehensive error handling
+- Security: XSS protection via content sanitization
+
+**Error Types**:
+- `LLM_UNAVAILABLE`: LLM service unavailable (503)
+- `COMPONENT_NOT_FOUND`: Invalid component in spec (500)
+- `INVALID_SPECIFICATION`: Validation failed (500)
+- `TIMEOUT`: Generation exceeded 15s (504)
+- `VALIDATION_FAILED`: Schema validation errors (500)
 
 ### RAG Retrieval
 _Coming in Epic 2: Story 2.3_
@@ -208,3 +333,16 @@ _Epic 1: Story 1.4_
   * ChatInput molecule component
   * Database schema: dyn_conversations, dyn_messages, dyn_sessions
   * Iron Session authentication details
+- 2025-10-09: Added DYN-3 implementation details:
+  * POST /api/intent/classify endpoint
+  * 10 intent types with confidence scoring
+  * Entity extraction capabilities
+  * Claude 3 Haiku integration
+- 2025-10-09: Added DYN-4 implementation details:
+  * POST /api/page/generate endpoint
+  * PageSpecification and ComponentSpec schemas
+  * 25+ component library across 10 categories
+  * LLM-driven page generation system
+  * Caching layer (30min TTL, 100 entries)
+  * Validation and sanitization
+  * Performance: <100ms (cached), ~15s (uncached)
