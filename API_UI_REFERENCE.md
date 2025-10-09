@@ -12,14 +12,66 @@ This document maintains a comprehensive reference of all API endpoints and UI co
 ## API Endpoints
 
 ### Chat & Conversation
-_Coming in Epic 1: Story 1.1_
+✅ **Implemented in DYN-2 (Story 1.1)**
+
+#### POST /api/chat/message
+Send a message and receive AI response
 
 ```typescript
-// POST /api/chat
-// Send a message and receive AI-generated response
-// Body: { message: string, sessionId: string }
-// Response: { response: string, intent: string, suggestedActions: Action[] }
+// Request Body
+{
+  message: string           // User message content
+  conversationId?: string   // Optional: existing conversation ID
+}
+
+// Response
+{
+  success: boolean
+  conversationId: string
+  userMessage: DynMessage
+  assistantMessage: DynMessage
+  sessionId: string
+}
+
+// Error Response
+{
+  error: string
+}
 ```
+
+**Authentication**: Iron Session cookie-based
+**Database Tables**: dyn_conversations, dyn_messages
+
+---
+
+#### GET /api/chat/history
+Retrieve conversation history
+
+```typescript
+// Query Parameters
+?conversationId=<uuid>  // Optional: specific conversation
+
+// Response (with conversationId)
+{
+  conversation: DynConversation
+  messages: DynMessage[]
+  sessionId: string
+}
+
+// Response (without conversationId)
+{
+  conversations: DynConversation[]
+  sessionId: string
+}
+
+// Error Response
+{
+  error: string
+}
+```
+
+**Authentication**: Iron Session cookie-based
+**Database Tables**: dyn_conversations, dyn_messages
 
 ### Intent Classification
 _Coming in Epic 1: Story 1.2_
@@ -56,12 +108,67 @@ _Coming in Epic 2: Story 2.3_
 ## UI Components
 
 ### Chat Interface
-_Epic 1: Story 1.1_
+✅ **Implemented in DYN-2 (Story 1.1)**
+
+#### ChatInterface (Organism)
+**Location**: `src/components/organisms/ChatInterface.tsx`
+**Purpose**: Complete persistent chat interface with message history and real-time updates
 
 ```typescript
-// Location: src/components/organisms/ChatInterface.tsx
-// Purpose: Persistent chat interface with message history
-// Props: { sessionId: string, onMessageSent: (message: string) => void }
+interface ChatInterfaceProps {
+  initialMessages?: Message[]  // Optional: pre-loaded messages
+  conversationId?: string       // Optional: existing conversation
+}
+
+// Features:
+// - Auto-loads conversation history on mount
+// - Displays messages in chronological order
+// - Auto-scrolls to latest message
+// - Shows typing indicator while loading
+// - Error handling with user-friendly messages
+// - Session-based persistence via Iron Session
+```
+
+**Dependencies**: ChatMessage (atom), ChatInput (molecule)
+
+---
+
+#### ChatMessage (Atom)
+**Location**: `src/components/atoms/ChatMessage.tsx`
+**Purpose**: Individual message bubble display
+
+```typescript
+interface ChatMessageProps {
+  role: 'user' | 'assistant' | 'system'
+  content: string
+  timestamp?: string
+}
+
+// Features:
+// - Different styling for user vs assistant messages
+// - Timestamp display
+// - Responsive text wrapping
+// - Accessible markup
+```
+
+---
+
+#### ChatInput (Molecule)
+**Location**: `src/components/molecules/ChatInput.tsx`
+**Purpose**: Message input with keyboard shortcuts
+
+```typescript
+interface ChatInputProps {
+  onSendMessage: (message: string) => void
+  disabled?: boolean
+  placeholder?: string
+}
+
+// Features:
+// - Enter to send, Shift+Enter for new line
+// - Auto-resize textarea (min 52px, max 120px)
+// - Disabled state during message sending
+// - Clear input after successful send
 ```
 
 ### Dynamic Page Renderer
@@ -93,3 +200,11 @@ _Epic 1: Story 1.4_
 
 ## Update Log
 - 2025-10-09: Initial document structure created
+- 2025-10-09: Added DYN-2 implementation details:
+  * POST /api/chat/message endpoint
+  * GET /api/chat/history endpoint
+  * ChatInterface organism component
+  * ChatMessage atom component
+  * ChatInput molecule component
+  * Database schema: dyn_conversations, dyn_messages, dyn_sessions
+  * Iron Session authentication details
