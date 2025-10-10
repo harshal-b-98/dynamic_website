@@ -87,6 +87,42 @@ h1, h2, h3, h4, h5, h6 {
   animation: fade-in 0.5s ease-out;
 }
 
+/* Dynamic page content spacing */
+.dynamic-page-content {
+  animation: fade-in 0.5s ease-out;
+}
+
+.dynamic-page-content > * + * {
+  margin-top: 3rem;
+}
+
+/* Feature grid improvements */
+.feature-grid {
+  margin: 2rem 0;
+}
+
+/* Hero section enhancements */
+.hero-section {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Component cards */
+.feature-card,
+.testimonial-card {
+  transition: all 0.3s ease;
+  will-change: transform, box-shadow;
+}
+
+.feature-card:hover {
+  transform: translateY(-4px);
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);

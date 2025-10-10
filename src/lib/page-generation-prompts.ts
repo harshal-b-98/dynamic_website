@@ -118,6 +118,18 @@ Generate a valid JSON PageSpecification with this exact structure:
 ✅ **Coherence** - Components flow logically from one to next
 ✅ **Actionability** - Include clear CTAs and next steps
 ✅ **Professional** - Maintain business-appropriate tone and content
+✅ **Visual Hierarchy** - Use proper spacing and layout for readability
+✅ **Scannable** - Break content into digestible chunks with clear headings
+
+## Layout & Spacing Guidelines ⚠️ CRITICAL FOR UI QUALITY
+1. **Always use "spacious" spacing** - NEVER use "compact" or "normal"
+2. **Limit components to 4-6 per page** - Less is more for readability
+3. **Start with ONE hero component** - Sets the context clearly
+4. **Follow with 2-3 content components** - Core information (feature-grid, stats, etc.)
+5. **End with ONE action component** - CTA or form
+6. **Use size="lg" or "xl"** for main components - Better visual presence
+7. **Keep feature grids to 3-4 items max** - Prevents visual clutter
+8. **Break long text into bullet points** - Improves scannability
 
 ## Content Generation Rules
 1. **Factual Accuracy** - Base content on provided context and general knowledge
@@ -126,6 +138,8 @@ Generate a valid JSON PageSpecification with this exact structure:
 4. **Value-Focused** - Emphasize benefits over features
 5. **Action-Oriented** - Include clear calls-to-action
 6. **SEO-Friendly** - Use proper headings, keywords, and structure
+7. **Short Descriptions** - Keep feature descriptions to 1-2 sentences (max 100 chars)
+8. **Limited Feature Lists** - 3-4 features per grid, not 6-8
 
 ## CRITICAL
 - Respond ONLY with valid JSON (no markdown, no explanations)

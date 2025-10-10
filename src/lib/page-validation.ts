@@ -178,12 +178,26 @@ function validateComponentSpec(component: any, index: number): string[] {
 function validateNavigation(navigation: any): string[] {
   const warnings: string[] = []
 
-  if (navigation.relatedQueries && navigation.relatedQueries.length > 5) {
-    warnings.push('Navigation: More than 5 related queries may overwhelm users')
+  // Validate relatedQueries is array of strings
+  if (navigation.relatedQueries) {
+    if (!Array.isArray(navigation.relatedQueries)) {
+      warnings.push('Navigation: relatedQueries must be an array')
+    } else if (navigation.relatedQueries.length > 5) {
+      warnings.push('Navigation: More than 5 related queries may overwhelm users')
+    } else if (navigation.relatedQueries.some((q: any) => typeof q !== 'string')) {
+      warnings.push('Navigation: relatedQueries must be an array of strings, found objects')
+    }
   }
 
-  if (navigation.nextSteps && navigation.nextSteps.length > 5) {
-    warnings.push('Navigation: More than 5 next steps may be too many')
+  // Validate nextSteps is array of strings
+  if (navigation.nextSteps) {
+    if (!Array.isArray(navigation.nextSteps)) {
+      warnings.push('Navigation: nextSteps must be an array')
+    } else if (navigation.nextSteps.length > 5) {
+      warnings.push('Navigation: More than 5 next steps may be too many')
+    } else if (navigation.nextSteps.some((s: any) => typeof s !== 'string')) {
+      warnings.push('Navigation: nextSteps must be an array of strings, found objects')
+    }
   }
 
   return warnings
@@ -235,29 +249,96 @@ export function validateComponentOrdering(components: ComponentSpec[]): Validati
 }
 
 /**
+ * Recursively sanitize any value - convert {text, link} objects to just text strings
+ */
+function sanitizeValue(value: any): any {
+  // Handle null/undefined
+  if (value === null || value === undefined) {
+    return value
+  }
+
+  // Handle arrays
+  if (Array.isArray(value)) {
+    return value.map(item => sanitizeValue(item))
+  }
+
+  // Handle objects
+  if (typeof value === 'object') {
+    // Special case: {text, link} objects should become just text
+    if (value.text && typeof value.text === 'string') {
+      return value.text
+    }
+
+    // Recursively sanitize object properties
+    const sanitized: any = {}
+    Object.keys(value).forEach(key => {
+      sanitized[key] = sanitizeValue(value[key])
+    })
+    return sanitized
+  }
+
+  // Handle strings - remove script tags
+  if (typeof value === 'string') {
+    return value.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+  }
+
+  // Return primitives as-is
+  return value
+}
+
+/**
  * Sanitize page specification (remove potentially harmful content)
  */
 export function sanitizePageSpecification(pageSpec: PageSpecification): PageSpecification {
   // Deep clone to avoid mutations
   const sanitized = JSON.parse(JSON.stringify(pageSpec))
 
-  // Sanitize component props and content
+  // Sanitize component props and content with recursive sanitization
   sanitized.layout.components = sanitized.layout.components.map((component: ComponentSpec) => {
-    // Remove any script tags or potentially harmful content
-    if (component.content && typeof component.content === 'string') {
-      component.content = component.content.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
-    }
+    // Recursively sanitize props
+    component.props = sanitizeValue(component.props)
 
-    // Sanitize props
-    Object.keys(component.props).forEach(key => {
-      const value = component.props[key]
-      if (typeof value === 'string') {
-        component.props[key] = value.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
-      }
-    })
+    // Recursively sanitize content
+    component.content = sanitizeValue(component.content)
 
     return component
   })
+
+  // Sanitize navigation - convert objects to strings if needed
+  if (sanitized.navigation) {
+    // Fix relatedQueries if they're objects
+    if (Array.isArray(sanitized.navigation.relatedQueries)) {
+      sanitized.navigation.relatedQueries = sanitized.navigation.relatedQueries.map((query: any) => {
+        if (typeof query === 'object' && query.text) {
+          return query.text // Extract text property
+        }
+        return typeof query === 'string' ? query : String(query)
+      })
+    }
+
+    // Fix nextSteps if they're objects
+    if (Array.isArray(sanitized.navigation.nextSteps)) {
+      sanitized.navigation.nextSteps = sanitized.navigation.nextSteps.map((step: any) => {
+        if (typeof step === 'object' && step.text) {
+          return step.text // Extract text property
+        }
+        return typeof step === 'string' ? step : String(step)
+      })
+    }
+
+    // Fix breadcrumbs if needed
+    if (Array.isArray(sanitized.navigation.breadcrumbs)) {
+      sanitized.navigation.breadcrumbs = sanitized.navigation.breadcrumbs.map((crumb: any) => {
+        if (typeof crumb === 'object') {
+          return {
+            label: String(crumb.label || ''),
+            href: String(crumb.href || '#')
+          }
+        }
+        return crumb
+      })
+    }
+  }
 
   return sanitized
 }

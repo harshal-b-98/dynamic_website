@@ -1,10 +1,27 @@
-import FloatingChatWidget from '@/components/organisms/FloatingChatWidget'
+'use client'
+
+import { useState } from 'react'
+import ImprovedChatWidget from '@/components/organisms/ImprovedChatWidget'
+import { DynamicPageRenderer } from '@/components/organisms/DynamicPageRenderer'
+import { PageSpecification } from '@/lib/page-generation'
 
 export default function Home() {
+  const [currentPageSpec, setCurrentPageSpec] = useState<PageSpecification | null>(null)
+
+  // Handler for when a page is generated from chat
+  const handlePageGenerated = (pageSpec: PageSpecification) => {
+    setCurrentPageSpec(pageSpec)
+  }
+
+  // Handler to return to landing page
+  const handleBackToLanding = () => {
+    setCurrentPageSpec(null)
+  }
+
   return (
     <div className="min-h-screen bg-surface-white">
       {/* Navigation */}
-      <nav className="border-b border-light-data-gray bg-surface-white">
+      <nav className="border-b border-light-data-gray bg-surface-white z-50 relative">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -25,8 +42,40 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <section className="bg-gradient-to-b from-deep-indigo to-black py-20 md:py-32">
+      {/* Dynamic Page Content OR Landing Page */}
+      {currentPageSpec ? (
+        /* AI-Generated Dynamic Page */
+        <div className="min-h-screen bg-gradient-to-b from-white via-gray-50 to-white pb-24">
+          <div className="container mx-auto px-4 sm:px-6 py-8">
+            <div className="max-w-7xl mx-auto">
+              {/* Back to Landing Button */}
+              <button
+                onClick={handleBackToLanding}
+                className="mb-8 flex items-center gap-2 text-[var(--charcoal-gray)] hover:text-[var(--electric-cyan)] transition-all duration-300 font-inter font-medium group"
+              >
+                <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                <span>Back to Home</span>
+              </button>
+
+              {/* Render Dynamic Page */}
+              <div className="dynamic-page-content">
+                <DynamicPageRenderer
+                  pageSpec={currentPageSpec}
+                  onComponentError={(componentType, error) => {
+                    console.error(`Component error: ${componentType}`, error)
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : (
+        /* Landing Page Content */
+        <>
+          {/* Hero Section */}
+          <section className="bg-gradient-to-b from-deep-indigo to-black py-20 md:py-32">
         <div className="container mx-auto px-6">
           <div className="max-w-5xl mx-auto text-center">
             <h1 className="text-5xl md:text-7xl font-mont font-extrabold text-surface-white mb-6 leading-tight">
@@ -435,9 +484,11 @@ export default function Home() {
           </div>
         </div>
       </footer>
+        </>
+      )}
 
-      {/* Floating Chat Widget */}
-      <FloatingChatWidget />
+      {/* Improved Chat Widget */}
+      <ImprovedChatWidget onPageGenerated={handlePageGenerated} />
     </div>
   )
 }

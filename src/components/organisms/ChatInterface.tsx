@@ -3,7 +3,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import ChatMessage from '@/components/atoms/ChatMessage'
 import ChatInput from '@/components/molecules/ChatInput'
-import { DynamicPageRenderer } from '@/components/organisms/DynamicPageRenderer'
 import { PageSpecification } from '@/lib/page-generation'
 
 interface Message {
@@ -18,11 +17,13 @@ interface Message {
 interface ChatInterfaceProps {
   initialMessages?: Message[]
   conversationId?: string
+  onPageGenerated?: (pageSpec: PageSpecification) => void
 }
 
 export default function ChatInterface({
   initialMessages = [],
-  conversationId: initialConversationId
+  conversationId: initialConversationId,
+  onPageGenerated
 }: ChatInterfaceProps) {
   const [messages, setMessages] = useState<Message[]>(initialMessages)
   const [conversationId, setConversationId] = useState<string | undefined>(
@@ -30,7 +31,6 @@ export default function ChatInterface({
   )
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [currentPageSpec, setCurrentPageSpec] = useState<PageSpecification | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   // Scroll to bottom when messages change
@@ -90,9 +90,9 @@ export default function ChatInterface({
         setConversationId(data.conversationId)
       }
 
-      // Update page spec if one was generated
-      if (data.pageSpec) {
-        setCurrentPageSpec(data.pageSpec)
+      // Notify parent if page was generated
+      if (data.pageSpec && onPageGenerated) {
+        onPageGenerated(data.pageSpec)
       }
 
       // Add both user and assistant messages to the list
@@ -111,37 +111,7 @@ export default function ChatInterface({
 
   return (
     <div className="flex flex-col h-full bg-white overflow-hidden">
-      {/* Dynamic Page Display */}
-      {currentPageSpec && (
-        <div className="flex-1 overflow-y-auto p-6">
-          <div className="max-w-6xl mx-auto">
-            {/* Page Dismiss Button */}
-            <div className="mb-4 flex justify-between items-center">
-              <button
-                onClick={() => setCurrentPageSpec(null)}
-                className="text-sm text-gray-600 hover:text-gray-900 flex items-center gap-2"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-                Back to chat
-              </button>
-              <span className="text-xs text-gray-500">AI-Generated Page</span>
-            </div>
-
-            {/* Render the Dynamic Page */}
-            <DynamicPageRenderer
-              pageSpec={currentPageSpec}
-              onComponentError={(componentType, error) => {
-                console.error(`Component error: ${componentType}`, error)
-              }}
-            />
-          </div>
-        </div>
-      )}
-
       {/* Messages Container */}
-      {!currentPageSpec && (
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
           {messages.length === 0 && !isLoading && (
             <div className="text-center text-gray-500 mt-8">
@@ -187,13 +157,12 @@ export default function ChatInterface({
 
           <div ref={messagesEndRef} />
         </div>
-      )}
 
       {/* Input */}
       <ChatInput
         onSendMessage={handleSendMessage}
         disabled={isLoading}
-        placeholder={currentPageSpec ? "Ask another question..." : "Type your message..."}
+        placeholder="Type your message..."
       />
     </div>
   )

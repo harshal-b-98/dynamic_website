@@ -12,40 +12,40 @@ export default function HeroSection({ spec }: DynamicComponentProps) {
   const theme = styling?.theme || 'light'
 
   const sizeClasses = {
-    sm: 'py-12',
-    md: 'py-16',
-    lg: 'py-24',
-    xl: 'py-32'
+    sm: 'py-16',
+    md: 'py-20',
+    lg: 'py-28',
+    xl: 'py-36'
   }
 
   const themeClasses = {
-    light: 'bg-white text-gray-900',
-    dark: 'bg-gray-900 text-white',
-    brand: 'bg-gradient-to-br from-[var(--deep-indigo)] to-[var(--electric-cyan)] text-white'
+    light: 'bg-gradient-to-b from-white to-gray-50 text-[var(--charcoal-gray)]',
+    dark: 'bg-gradient-to-br from-[var(--deep-indigo)] to-[#0d1f3d] text-white',
+    brand: 'bg-gradient-to-br from-[var(--deep-indigo)] via-[#0d2340] to-[var(--electric-cyan)] text-white'
   }
 
   return (
     <section
-      className={`hero-section ${sizeClasses[size]} ${themeClasses[theme]} -mx-4 px-4 md:-mx-8 md:px-8`}
+      className={`hero-section ${sizeClasses[size]} ${themeClasses[theme]} rounded-2xl -mx-4 px-6 md:-mx-0 md:px-12`}
     >
-      <div className="max-w-5xl mx-auto text-center">
+      <div className="max-w-4xl mx-auto text-center">
         {/* Headline */}
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+        <h1 className="text-4xl md:text-5xl lg:text-6xl font-mont font-extrabold mb-8 leading-tight tracking-tight">
           {props.headline || content?.headline || 'Welcome to ConsumerIQ'}
         </h1>
 
         {/* Subheading */}
         {(props.subheading || content?.subheading) && (
-          <p className="text-lg md:text-xl lg:text-2xl mb-8 text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+          <p className="text-xl md:text-2xl mb-12 opacity-90 leading-relaxed max-w-3xl mx-auto font-inter">
             {props.subheading || content?.subheading}
           </p>
         )}
 
         {/* CTAs */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        <div className="flex flex-col sm:flex-row gap-5 justify-center items-center">
           {(props.ctaText || content?.ctaText) && (
             <button
-              className="px-8 py-3 bg-[var(--electric-cyan)] text-[var(--deep-indigo)] font-semibold rounded-lg hover:bg-opacity-90 transition-all transform hover:scale-105"
+              className="px-10 py-4 bg-[var(--electric-cyan)] text-[var(--deep-indigo)] font-mont font-bold text-lg rounded-xl hover:shadow-2xl hover:scale-105 transition-all duration-300"
               onClick={() => {
                 // TODO: Handle CTA click
                 console.log('CTA clicked:', props.ctaText || content?.ctaText)
@@ -57,7 +57,7 @@ export default function HeroSection({ spec }: DynamicComponentProps) {
 
           {(props.secondaryCta || content?.secondaryCta) && (
             <button
-              className="px-8 py-3 bg-transparent border-2 border-current font-semibold rounded-lg hover:bg-white hover:bg-opacity-10 transition-all"
+              className="px-10 py-4 bg-transparent border-2 border-current font-mont font-bold text-lg rounded-xl hover:bg-white hover:bg-opacity-10 transition-all duration-300"
               onClick={() => {
                 console.log('Secondary CTA clicked:', props.secondaryCta || content?.secondaryCta)
               }}

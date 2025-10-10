@@ -2,8 +2,13 @@
 
 import React, { useState } from 'react'
 import ChatInterface from './ChatInterface'
+import { PageSpecification } from '@/lib/page-generation'
 
-export default function FloatingChatWidget() {
+interface FloatingChatWidgetProps {
+  onPageGenerated?: (pageSpec: PageSpecification) => void
+}
+
+export default function FloatingChatWidget({ onPageGenerated }: FloatingChatWidgetProps) {
   const [isOpen, setIsOpen] = useState(false)
 
   return (
@@ -81,7 +86,7 @@ export default function FloatingChatWidget() {
 
           {/* Chat Interface */}
           <div className="flex-1 overflow-hidden">
-            <ChatInterface />
+            <ChatInterface onPageGenerated={onPageGenerated} />
           </div>
         </div>
       )}

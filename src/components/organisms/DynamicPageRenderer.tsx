@@ -195,31 +195,32 @@ function PageMetadata({ metadata }: { metadata: PageSpecification['metadata'] })
  */
 function getLayoutClass(
   layoutType: string,
-  spacing: string = 'normal'
+  spacing: string = 'spacious'
 ): string {
+  // Enhanced spacing for better readability - default to spacious
   const spacingClasses = {
-    compact: 'space-y-4',
-    normal: 'space-y-8',
-    spacious: 'space-y-12'
+    compact: 'space-y-8',
+    normal: 'space-y-12',
+    spacious: 'space-y-16'
   }
 
-  const baseSpacing = spacingClasses[spacing as keyof typeof spacingClasses] || spacingClasses.normal
+  const baseSpacing = spacingClasses[spacing as keyof typeof spacingClasses] || spacingClasses.spacious
 
   switch (layoutType) {
     case 'single-column':
-      return `max-w-4xl mx-auto ${baseSpacing}`
+      return `max-w-5xl mx-auto ${baseSpacing}`
 
     case 'two-column':
-      return `grid grid-cols-1 lg:grid-cols-3 gap-8 ${baseSpacing}`
+      return `grid grid-cols-1 lg:grid-cols-3 gap-10 lg:gap-12 ${baseSpacing}`
 
     case 'grid':
-      return `grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 ${baseSpacing}`
+      return `grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 ${baseSpacing}`
 
     case 'custom':
       return `${baseSpacing}`
 
     default:
-      return `max-w-4xl mx-auto ${baseSpacing}`
+      return `max-w-5xl mx-auto ${baseSpacing}`
   }
 }
 

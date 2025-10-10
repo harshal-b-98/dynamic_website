@@ -140,7 +140,10 @@ export async function POST(request: NextRequest) {
           pageSpec = {
             id: uuidv4(),
             type: pageData.type,
-            metadata: pageData.metadata,
+            metadata: {
+              ...pageData.metadata,
+              generatedFor: query  // Add original user query
+            },
             layout: pageData.layout,
             navigation: pageData.navigation,
             generatedAt: new Date(),
