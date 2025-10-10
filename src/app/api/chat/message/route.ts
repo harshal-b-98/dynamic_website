@@ -4,6 +4,8 @@ import { cookies } from 'next/headers'
 import { sessionOptions, SessionData } from '@/lib/session'
 import { supabaseAdmin } from '@/lib/supabase'
 import { anthropic, DEFAULT_CLAUDE_PARAMS } from '@/lib/claude'
+import { ContextManager } from '@/lib/context-manager'
+import { Message } from '@/lib/context-types'
 import { v4 as uuidv4 } from 'uuid'
 
 export async function POST(request: NextRequest) {
@@ -214,6 +216,43 @@ Respond helpfully based on the user's intent. Keep responses concise (2-3 paragr
         { error: 'Failed to store response' },
         { status: 500 }
       )
+    }
+
+    // Update conversation context using ContextManager
+    try {
+      const contextManager = new ContextManager(session.sessionId, session.userId)
+
+      // Add assistant message to context
+      const assistantContextMessage: Message = {
+        id: assistantMessage.id,
+        role: 'assistant',
+        content: aiResponse,
+        intent,
+        timestamp: new Date(assistantMessage.created_at),
+        metadata: assistantMessage.metadata
+      }
+
+      // Update context with new message and optionally page view
+      await contextManager.updateContext(activeConversationId, {
+        addMessage: assistantContextMessage,
+        ...(pageSpec && {
+          addPageView: {
+            pageId: pageSpec.id,
+            pageType: pageSpec.type,
+            title: pageSpec.metadata.title,
+            viewedAt: new Date(),
+            specification: pageSpec
+          }
+        }),
+        lastIntent: intent,
+        updateMetadata: {
+          lastActiveAt: new Date(),
+          totalTokens: (claudeResponse.usage.input_tokens + claudeResponse.usage.output_tokens)
+        }
+      })
+    } catch (contextError) {
+      console.error('Error updating context (non-blocking):', contextError)
+      // Don't fail the request if context update fails
     }
 
     return NextResponse.json({
