@@ -18,6 +18,7 @@ export interface ValidationResult {
   valid: boolean
   errors: string[]
   warnings: string[]
+  corrected?: boolean  // True if auto-corrections were applied
 }
 
 /**
@@ -51,6 +52,11 @@ export function validatePageSpecification(pageSpec: any): ValidationResult {
   } else {
     const layoutErrors = validateLayout(pageSpec.layout)
     errors.push(...layoutErrors)
+
+    // Validate UI quality standards
+    const uiErrors = validateUIQuality(pageSpec.layout)
+    errors.push(...uiErrors.errors)
+    warnings.push(...uiErrors.warnings)
   }
 
   // Validate components
@@ -246,6 +252,153 @@ export function validateComponentOrdering(components: ComponentSpec[]): Validati
   }
 
   return { valid: errors.length === 0, errors, warnings }
+}
+
+/**
+ * Validate UI Quality Standards
+ * Enforces spacing, component count, sizes, and content guidelines
+ */
+function validateUIQuality(layout: any): { errors: string[], warnings: string[] } {
+  const errors: string[] = []
+  const warnings: string[] = []
+
+  // 1. Validate spacing is "spacious"
+  if (layout.spacing && layout.spacing !== 'spacious') {
+    warnings.push(`UI Quality: spacing should be "spacious" for better readability (found: "${layout.spacing}")`)
+  }
+
+  // 2. Validate component count (optimal: 4-5)
+  const componentCount = layout.components?.length || 0
+  if (componentCount > 7) {
+    warnings.push(`UI Quality: Too many components (${componentCount}). Optimal is 4-5 for better user experience.`)
+  } else if (componentCount > 5 && componentCount <= 7) {
+    warnings.push(`UI Quality: Component count (${componentCount}) is above optimal range of 4-5.`)
+  }
+
+  // 3. Validate component sizes
+  if (layout.components) {
+    layout.components.forEach((component: any, index: number) => {
+      if (component.styling?.size) {
+        if (component.styling.size === 'sm' || component.styling.size === 'md') {
+          warnings.push(`Component[${index}]: Size "${component.styling.size}" may be too small. Consider "lg" or "xl" for better visibility.`)
+        }
+      }
+
+      // 4. Validate feature grid item counts
+      if (component.componentType === 'feature-grid') {
+        const features = component.props?.features || component.content?.features || []
+        if (features.length > 4) {
+          warnings.push(`Component[${index}] (feature-grid): ${features.length} features may be overwhelming. Optimal is 3-4 items.`)
+        }
+
+        // Check feature descriptions
+        features.forEach((feature: any, featureIndex: number) => {
+          const desc = feature.description || ''
+          if (desc.length > 120) {
+            warnings.push(`Component[${index}] Feature[${featureIndex}]: Description too long (${desc.length} chars). Keep under 100 chars.`)
+          }
+        })
+      }
+
+      // 5. Validate hero component is first
+      if (index === 0 && !component.componentType.includes('hero') && !component.componentType.includes('header')) {
+        warnings.push(`UI Quality: First component should be a hero or header for proper page structure.`)
+      }
+    })
+  }
+
+  return { errors, warnings }
+}
+
+/**
+ * Auto-correct common UI quality issues
+ * Returns corrected page spec and list of corrections made
+ */
+export function autoCorrectPageSpecification(pageSpec: PageSpecification): {
+  corrected: PageSpecification
+  corrections: string[]
+} {
+  const corrections: string[] = []
+  const corrected = JSON.parse(JSON.stringify(pageSpec)) as PageSpecification
+
+  // 1. Fix spacing
+  if (!corrected.layout.spacing || corrected.layout.spacing !== 'spacious') {
+    const oldSpacing = corrected.layout.spacing
+    corrected.layout.spacing = 'spacious'
+    corrections.push(`Changed spacing from "${oldSpacing}" to "spacious"`)
+  }
+
+  // 2. Limit component count (keep first 5 if more than 5)
+  if (corrected.layout.components.length > 5) {
+    const removed = corrected.layout.components.length - 5
+    corrected.layout.components = corrected.layout.components.slice(0, 5)
+    corrections.push(`Removed ${removed} excess components (kept first 5)`)
+  }
+
+  // 3. Fix component sizes
+  corrected.layout.components = corrected.layout.components.map((component, index) => {
+    if (!component.styling) {
+      component.styling = {}
+    }
+
+    if (!component.styling.size || component.styling.size === 'sm' || component.styling.size === 'md') {
+      const oldSize = component.styling.size
+      component.styling.size = 'lg'
+      corrections.push(`Component[${index}]: Changed size from "${oldSize}" to "lg"`)
+    }
+
+    return component
+  })
+
+  // 4. Limit feature grid items
+  corrected.layout.components = corrected.layout.components.map((component, index) => {
+    if (component.componentType === 'feature-grid') {
+      const features = component.props?.features || component.content?.features || []
+      if (features.length > 4) {
+        const keptFeatures = features.slice(0, 4)
+        if (component.props?.features) {
+          component.props.features = keptFeatures
+        }
+        if (component.content?.features) {
+          component.content.features = keptFeatures
+        }
+        corrections.push(`Component[${index}] (feature-grid): Limited features from ${features.length} to 4`)
+      }
+
+      // Trim long descriptions
+      const targetFeatures = component.props?.features || component.content?.features || []
+      targetFeatures.forEach((feature: any, featureIndex: number) => {
+        if (feature.description && feature.description.length > 100) {
+          const originalLength = feature.description.length
+          feature.description = feature.description.substring(0, 97) + '...'
+          corrections.push(`Component[${index}] Feature[${featureIndex}]: Trimmed description from ${originalLength} to 100 chars`)
+        }
+      })
+    }
+
+    return component
+  })
+
+  // 5. Ensure hero component is first (if present)
+  const heroIndex = corrected.layout.components.findIndex(c =>
+    c.componentType.includes('hero') || c.componentType.includes('header')
+  )
+
+  if (heroIndex > 0) {
+    const hero = corrected.layout.components[heroIndex]
+    corrected.layout.components.splice(heroIndex, 1)
+    corrected.layout.components.unshift(hero)
+
+    // Reorder components
+    corrected.layout.components = corrected.layout.components.map((c, idx) => ({
+      ...c,
+      order: idx
+    }))
+
+    corrections.push(`Moved hero component to first position and reordered components`)
+  }
+
+  return { corrected, corrections }
 }
 
 /**

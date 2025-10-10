@@ -13,7 +13,7 @@ import {
   buildErrorRecoveryPrompt
 } from '@/lib/page-generation-prompts'
 import { validateComponent } from '@/lib/component-registry'
-import { validatePageSpecification, sanitizePageSpecification } from '@/lib/page-validation'
+import { validatePageSpecification, sanitizePageSpecification, autoCorrectPageSpecification } from '@/lib/page-validation'
 import { getCachedPage, cachePage } from '@/lib/page-cache'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -168,6 +168,13 @@ export async function POST(request: NextRequest) {
 
           // Sanitize page specification
           pageSpec = sanitizePageSpecification(pageSpec)
+
+          // Auto-correct UI quality issues
+          const { corrected, corrections } = autoCorrectPageSpecification(pageSpec)
+          if (corrections.length > 0) {
+            console.log('Auto-corrections applied:', corrections)
+            pageSpec = corrected
+          }
 
           // Log generation metrics
           const metrics: PageGenerationMetrics = {
