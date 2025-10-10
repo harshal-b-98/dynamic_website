@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import ChatMessage from '@/components/atoms/ChatMessage'
 import ChatInput from '@/components/molecules/ChatInput'
 import ThinkingProcessView from '@/components/organisms/ThinkingProcessView'
@@ -96,12 +96,25 @@ export default function ChatInterface({
     loadHistory()
   }, [conversationId])
 
-  const handleSendMessage = async (messageContent: string) => {
+  const handleSendMessage = useCallback(async (messageContent: string) => {
     setError(null)
 
     // Start the thinking stream
     await startStream(messageContent, conversationId)
-  }
+  }, [conversationId, startStream])
+
+  // Listen for external message send requests (from bar mode)
+  useEffect(() => {
+    const handleExternalSend = (e: Event) => {
+      const customEvent = e as CustomEvent
+      if (customEvent.detail && customEvent.detail.message) {
+        handleSendMessage(customEvent.detail.message)
+      }
+    }
+
+    window.addEventListener('sendChatMessage', handleExternalSend)
+    return () => window.removeEventListener('sendChatMessage', handleExternalSend)
+  }, [conversationId, handleSendMessage])
 
   return (
     <div className="flex flex-col h-full bg-white overflow-hidden">

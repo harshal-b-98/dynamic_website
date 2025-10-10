@@ -15,43 +15,27 @@ export default function ImprovedChatWidget({ onPageGenerated }: ImprovedChatWidg
   const [conversationId, setConversationId] = useState<string | undefined>()
   const chatInterfaceRef = useRef<any>(null)
 
-  // Handle sending message from the bar (without opening full chat)
+  // Handle sending message from the bar (open full chat with thinking process)
   const handleBarSend = async () => {
     if (!barInput.trim() || isBarLoading) return
 
-    setIsBarLoading(true)
+    // Store the message to send
+    const messageToSend = barInput
 
-    try {
-      const response = await fetch('/api/chat/message', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          message: barInput,
-          conversationId
-        })
+    // Clear input immediately
+    setBarInput('')
+
+    // Switch to full mode so user can see the thinking process
+    setMode('full')
+
+    // Wait a moment for ChatInterface to mount, then send the message
+    setTimeout(() => {
+      // Trigger message send in ChatInterface
+      const event = new CustomEvent('sendChatMessage', {
+        detail: { message: messageToSend, conversationId }
       })
-
-      const data = await response.json()
-
-      if (response.ok) {
-        // Update conversation ID if new
-        if (data.conversationId && !conversationId) {
-          setConversationId(data.conversationId)
-        }
-
-        // Notify parent if page was generated
-        if (data.pageSpec && onPageGenerated) {
-          onPageGenerated(data.pageSpec)
-        }
-
-        // Clear input
-        setBarInput('')
-      }
-    } catch (error) {
-      console.error('Error sending message from bar:', error)
-    } finally {
-      setIsBarLoading(false)
-    }
+      window.dispatchEvent(event)
+    }, 100)
   }
 
   // Handle Enter key in bar input
