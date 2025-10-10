@@ -197,30 +197,32 @@ function getLayoutClass(
   layoutType: string,
   spacing: string = 'spacious'
 ): string {
-  // Enhanced spacing for better readability - default to spacious
+  // MUCH MORE generous spacing for professional look - always default to spacious
   const spacingClasses = {
-    compact: 'space-y-8',
-    normal: 'space-y-12',
-    spacious: 'space-y-16'
+    compact: 'space-y-12',      // 48px - minimum spacing
+    normal: 'space-y-16',        // 64px - good spacing
+    spacious: 'space-y-20'       // 80px - excellent spacing (default)
   }
 
   const baseSpacing = spacingClasses[spacing as keyof typeof spacingClasses] || spacingClasses.spacious
 
   switch (layoutType) {
     case 'single-column':
-      return `max-w-5xl mx-auto ${baseSpacing}`
+      // Add generous padding around content
+      return `max-w-6xl mx-auto px-6 py-12 ${baseSpacing}`
 
     case 'two-column':
-      return `grid grid-cols-1 lg:grid-cols-3 gap-10 lg:gap-12 ${baseSpacing}`
+      return `grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-16 px-6 py-12 ${baseSpacing}`
 
     case 'grid':
-      return `grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 ${baseSpacing}`
+      return `grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 lg:gap-12 px-6 py-12 ${baseSpacing}`
 
     case 'custom':
-      return `${baseSpacing}`
+      return `px-6 py-12 ${baseSpacing}`
 
     default:
-      return `max-w-5xl mx-auto ${baseSpacing}`
+      // Default to single column with generous spacing
+      return `max-w-6xl mx-auto px-6 py-12 ${baseSpacing}`
   }
 }
 

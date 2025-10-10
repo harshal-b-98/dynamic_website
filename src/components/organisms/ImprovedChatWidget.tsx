@@ -1,19 +1,34 @@
 'use client'
 
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, forwardRef, useImperativeHandle } from 'react'
 import ChatInterface from './ChatInterface'
 import { PageSpecification } from '@/lib/page-generation'
+import { ThinkingStage } from '@/lib/thinking-process'
 
 interface ImprovedChatWidgetProps {
   onPageGenerated?: (pageSpecification: PageSpecification) => void
+  onThinkingStart?: () => void
+  onStageUpdate?: (stages: ThinkingStage[]) => void
 }
 
-export default function ImprovedChatWidget({ onPageGenerated }: ImprovedChatWidgetProps) {
+export interface ImprovedChatWidgetRef {
+  minimizeToBar: () => void
+}
+
+const ImprovedChatWidget = forwardRef<ImprovedChatWidgetRef, ImprovedChatWidgetProps>(
+  ({ onPageGenerated, onThinkingStart, onStageUpdate }, ref) => {
   const [mode, setMode] = useState<'bubble' | 'bar' | 'full'>('bubble')
   const [barInput, setBarInput] = useState('')
   const [isBarLoading, setIsBarLoading] = useState(false)
   const [conversationId, setConversationId] = useState<string | undefined>()
   const chatInterfaceRef = useRef<any>(null)
+
+  // Expose minimizeToBar method to parent via ref
+  useImperativeHandle(ref, () => ({
+    minimizeToBar: () => {
+      setMode('bar')
+    }
+  }))
 
   // Handle sending message from the bar (open full chat with thinking process)
   const handleBarSend = async () => {
@@ -24,6 +39,9 @@ export default function ImprovedChatWidget({ onPageGenerated }: ImprovedChatWidg
 
     // Clear input immediately
     setBarInput('')
+
+    // Trigger thinking overlay on main page
+    onThinkingStart?.()
 
     // Switch to full mode so user can see the thinking process
     setMode('full')
@@ -196,6 +214,7 @@ export default function ImprovedChatWidget({ onPageGenerated }: ImprovedChatWidg
             <div className="flex-1 overflow-hidden">
               <ChatInterface
                 onPageGenerated={onPageGenerated}
+                onStageUpdate={onStageUpdate}
                 conversationId={conversationId}
               />
             </div>
@@ -204,4 +223,8 @@ export default function ImprovedChatWidget({ onPageGenerated }: ImprovedChatWidg
       )}
     </>
   )
-}
+})
+
+ImprovedChatWidget.displayName = 'ImprovedChatWidget'
+
+export default ImprovedChatWidget

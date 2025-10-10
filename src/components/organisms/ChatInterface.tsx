@@ -5,6 +5,7 @@ import ChatMessage from '@/components/atoms/ChatMessage'
 import ChatInput from '@/components/molecules/ChatInput'
 import ThinkingProcessView from '@/components/organisms/ThinkingProcessView'
 import { PageSpecification } from '@/lib/page-generation'
+import { ThinkingStage } from '@/lib/thinking-process'
 import { useThinkingStream } from '@/lib/use-thinking-stream'
 
 interface Message {
@@ -20,12 +21,14 @@ interface ChatInterfaceProps {
   initialMessages?: Message[]
   conversationId?: string
   onPageGenerated?: (pageSpec: PageSpecification) => void
+  onStageUpdate?: (stages: ThinkingStage[]) => void
 }
 
 export default function ChatInterface({
   initialMessages = [],
   conversationId: initialConversationId,
-  onPageGenerated
+  onPageGenerated,
+  onStageUpdate
 }: ChatInterfaceProps) {
   const [messages, setMessages] = useState<Message[]>(initialMessages)
   const [conversationId, setConversationId] = useState<string | undefined>(
@@ -65,6 +68,13 @@ export default function ChatInterface({
       setError(errorMessage)
     }
   })
+
+  // Pass stage updates to parent (for ThinkingOverlay)
+  useEffect(() => {
+    if (onStageUpdate) {
+      onStageUpdate(stages)
+    }
+  }, [stages, onStageUpdate])
 
   // Scroll to bottom when messages change
   useEffect(() => {

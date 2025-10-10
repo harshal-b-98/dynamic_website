@@ -1,21 +1,48 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import ImprovedChatWidget from '@/components/organisms/ImprovedChatWidget'
 import { DynamicPageRenderer } from '@/components/organisms/DynamicPageRenderer'
+import ThinkingOverlay from '@/components/organisms/ThinkingOverlay'
 import { PageSpecification } from '@/lib/page-generation'
+import { ThinkingStage, DEFAULT_THINKING_STAGES } from '@/lib/thinking-process'
 
 export default function Home() {
   const [currentPageSpec, setCurrentPageSpec] = useState<PageSpecification | null>(null)
+  const [isThinking, setIsThinking] = useState(false)
+  const [stages, setStages] = useState<ThinkingStage[]>(
+    DEFAULT_THINKING_STAGES.map(stage => ({ ...stage, status: 'pending' as const }))
+  )
+  const chatWidgetRef = useRef<{ minimizeToBar: () => void }>(null)
+
+  // Handler for when thinking starts
+  const handleThinkingStart = () => {
+    // Reset stages to pending
+    setStages(DEFAULT_THINKING_STAGES.map(stage => ({ ...stage, status: 'pending' as const })))
+    setIsThinking(true)
+  }
+
+  // Handler for stage updates from the chat stream
+  const handleStageUpdate = (updatedStages: ThinkingStage[]) => {
+    setStages(updatedStages)
+  }
 
   // Handler for when a page is generated from chat
   const handlePageGenerated = (pageSpec: PageSpecification) => {
     setCurrentPageSpec(pageSpec)
+    setIsThinking(false)
+    // Minimize chat back to bar mode after page is generated
+    chatWidgetRef.current?.minimizeToBar()
   }
 
   // Handler to return to landing page
   const handleBackToLanding = () => {
     setCurrentPageSpec(null)
+  }
+
+  // Handler to cancel thinking
+  const handleCancelThinking = () => {
+    setIsThinking(false)
   }
 
   return (
@@ -487,8 +514,20 @@ export default function Home() {
         </>
       )}
 
+      {/* Thinking Overlay */}
+      <ThinkingOverlay
+        isVisible={isThinking}
+        stages={stages}
+        onCancel={handleCancelThinking}
+      />
+
       {/* Improved Chat Widget */}
-      <ImprovedChatWidget onPageGenerated={handlePageGenerated} />
+      <ImprovedChatWidget
+        ref={chatWidgetRef}
+        onPageGenerated={handlePageGenerated}
+        onThinkingStart={handleThinkingStart}
+        onStageUpdate={handleStageUpdate}
+      />
     </div>
   )
 }

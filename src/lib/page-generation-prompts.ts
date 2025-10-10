@@ -121,15 +121,15 @@ Generate a valid JSON PageSpecification with this exact structure:
 ✅ **Visual Hierarchy** - Use proper spacing and layout for readability
 ✅ **Scannable** - Break content into digestible chunks with clear headings
 
-## Layout & Spacing Guidelines ⚠️ CRITICAL FOR UI QUALITY
-1. **Always use "spacious" spacing** - NEVER use "compact" or "normal"
-2. **Limit components to 4-6 per page** - Less is more for readability
-3. **Start with ONE hero component** - Sets the context clearly
-4. **Follow with 2-3 content components** - Core information (feature-grid, stats, etc.)
-5. **End with ONE action component** - CTA or form
-6. **Use size="lg" or "xl"** for main components - Better visual presence
-7. **Keep feature grids to 3-4 items max** - Prevents visual clutter
-8. **Break long text into bullet points** - Improves scannability
+## Layout & Spacing Guidelines ⚠️ ABSOLUTELY CRITICAL - PAGES WILL FAIL WITHOUT THESE
+1. **spacing MUST BE "spacious"** - This is NON-NEGOTIABLE. "compact" and "normal" are FORBIDDEN
+2. **MAXIMUM 4-5 components per page** - More than 5 creates visual chaos
+3. **Hero component is REQUIRED first** - Always order=0, sets context
+4. **2-3 content components maximum** - Core info only (feature-grid, stats, comparison)
+5. **ONE action component at end** - CTA or form, always last
+6. **ALL components MUST have size="lg" or "xl"** - Small sizes are not allowed
+7. **Feature grids: STRICT LIMIT of 3-4 items** - 5+ items ruins the layout
+8. **Descriptions: ONE sentence, 60-80 characters MAX** - No paragraphs in feature cards
 
 ## Content Generation Rules
 1. **Factual Accuracy** - Base content on provided context and general knowledge
@@ -141,13 +141,20 @@ Generate a valid JSON PageSpecification with this exact structure:
 7. **Short Descriptions** - Keep feature descriptions to 1-2 sentences (max 100 chars)
 8. **Limited Feature Lists** - 3-4 features per grid, not 6-8
 
-## CRITICAL
+## CRITICAL - ABSOLUTE REQUIREMENTS
 - Respond ONLY with valid JSON (no markdown, no explanations)
 - Ensure all components exist in the provided registry
 - Populate ALL required props for selected components
 - Generate real, meaningful content (no placeholders like "Lorem ipsum")
 - Consider the user's intent and conversation history
-- Adapt to detected persona when provided`
+- Adapt to detected persona when provided
+
+## ⚠️ SPACING CHECKLIST - VERIFY BEFORE SENDING
+✅ layout.spacing = "spacious" (NOT "compact" or "normal")
+✅ Total components = 4-5 maximum (NOT 6+)
+✅ Component size = "lg" or "xl" (NOT "sm" or "md")
+✅ Feature grid items = 3-4 maximum (NOT 5+)
+✅ Descriptions = ONE sentence, under 80 characters`
 }
 
 /**

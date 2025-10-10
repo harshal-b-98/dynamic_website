@@ -30,7 +30,8 @@
       "mcp__atlassian__createJiraIssue",
       "mcp__atlassian__updateConfluencePage",
       "Bash(git commit:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(git -C \"D:\\ClaudeProjects\\dynamic_website\" diff --stat)"
     ],
     "deny": [],
     "ask": []

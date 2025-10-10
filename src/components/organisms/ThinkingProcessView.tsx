@@ -110,6 +110,7 @@ export default function ThinkingProcessView({ isVisible, onCancel }: ThinkingPro
             key={stage.id}
             stage={stage}
             isActive={index === currentStageIndex && stage.status === 'active'}
+            stageIndex={index}
           />
         ))}
       </div>
