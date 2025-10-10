@@ -6,10 +6,23 @@
 
 import { DynamicComponentProps } from '@/lib/component-loader'
 
-export default function HeroSection({ spec }: DynamicComponentProps) {
+export default function HeroSection({ spec, onInteraction }: DynamicComponentProps) {
   const { props, content, styling } = spec
   const size = styling?.size || 'lg'
   const theme = styling?.theme || 'light'
+
+  // Handle button clicks
+  const handleClick = (label: string, action: string) => {
+    if (onInteraction) {
+      onInteraction({
+        interactionType: 'button',
+        label,
+        action,
+        intent: action.includes('demo') ? 'request-demo' :
+                action.includes('start') ? 'get-started' : 'learn-more',
+      })
+    }
+  }
 
   const sizeClasses = {
     sm: 'py-16',
@@ -46,10 +59,7 @@ export default function HeroSection({ spec }: DynamicComponentProps) {
           {(props.ctaText || content?.ctaText) && (
             <button
               className="px-10 py-4 bg-[var(--electric-cyan)] text-[var(--deep-indigo)] font-mont font-bold text-lg rounded-xl hover:shadow-2xl hover:scale-105 transition-all duration-300"
-              onClick={() => {
-                // TODO: Handle CTA click
-                console.log('CTA clicked:', props.ctaText || content?.ctaText)
-              }}
+              onClick={() => handleClick(props.ctaText || content?.ctaText, 'primary-cta')}
             >
               {props.ctaText || content?.ctaText}
             </button>
@@ -58,9 +68,7 @@ export default function HeroSection({ spec }: DynamicComponentProps) {
           {(props.secondaryCta || content?.secondaryCta) && (
             <button
               className="px-10 py-4 bg-transparent border-2 border-current font-mont font-bold text-lg rounded-xl hover:bg-white hover:bg-opacity-10 transition-all duration-300"
-              onClick={() => {
-                console.log('Secondary CTA clicked:', props.secondaryCta || content?.secondaryCta)
-              }}
+              onClick={() => handleClick(props.secondaryCta || content?.secondaryCta, 'secondary-cta')}
             >
               {props.secondaryCta || content?.secondaryCta}
             </button>

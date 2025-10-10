@@ -6,13 +6,19 @@ import { DynamicPageRenderer } from '@/components/organisms/DynamicPageRenderer'
 import ThinkingOverlay from '@/components/organisms/ThinkingOverlay'
 import { PageSpecification } from '@/lib/page-generation'
 import { ThinkingStage, DEFAULT_THINKING_STAGES } from '@/lib/thinking-process'
+import { NavigationStack, createNavigationStack, pushPage, goBack, canGoBack, getCurrentPage } from '@/lib/navigation-stack'
+import { InteractionHandlerProps, createInteractionContext } from '@/lib/interaction-types'
+import { generatePageFromInteraction } from '@/lib/interaction-service'
 
 export default function Home() {
   const [currentPageSpec, setCurrentPageSpec] = useState<PageSpecification | null>(null)
+  const [navigationStack, setNavigationStack] = useState<NavigationStack>(createNavigationStack(5))
   const [isThinking, setIsThinking] = useState(false)
   const [stages, setStages] = useState<ThinkingStage[]>(
     DEFAULT_THINKING_STAGES.map(stage => ({ ...stage, status: 'pending' as const }))
   )
+  const [conversationId] = useState<string>(() => `conv-${Date.now()}`)
+  const [sessionId] = useState<string>(() => `session-${Date.now()}`)
   const chatWidgetRef = useRef<{ minimizeToBar: () => void }>(null)
 
   // Handler for when thinking starts
@@ -29,15 +35,81 @@ export default function Home() {
 
   // Handler for when a page is generated from chat
   const handlePageGenerated = (pageSpec: PageSpecification) => {
+    // Add to navigation stack
+    setNavigationStack(prev => pushPage(prev, pageSpec))
     setCurrentPageSpec(pageSpec)
     setIsThinking(false)
     // Minimize chat back to bar mode after page is generated
     chatWidgetRef.current?.minimizeToBar()
   }
 
+  // Handler for interactions on generated pages
+  const handleInteraction = async (interactionProps: InteractionHandlerProps) => {
+    if (!currentPageSpec) return
+
+    // Create interaction context with full page context
+    const componentSpec = {
+      id: 'unknown',
+      componentType: 'unknown',
+      order: 0,
+      props: {},
+      content: {}
+    }
+
+    const interaction = createInteractionContext(
+      interactionProps,
+      componentSpec,
+      currentPageSpec,
+      sessionId,
+      conversationId
+    )
+
+    // Generate new page from interaction
+    handleThinkingStart()
+
+    const result = await generatePageFromInteraction({
+      interaction,
+      navigationStack,
+      conversationId,
+      sessionId,
+      onThinkingStart: handleThinkingStart,
+      onStageUpdate: handleStageUpdate,
+    })
+
+    setIsThinking(false)
+
+    if (result.success && result.pageSpec) {
+      // Add to navigation stack
+      setNavigationStack(prev => pushPage(prev, result.pageSpec!, interaction))
+      setCurrentPageSpec(result.pageSpec)
+      // Minimize chat
+      chatWidgetRef.current?.minimizeToBar()
+    } else {
+      console.error('Failed to generate page from interaction:', result.error)
+      // TODO: Show error toast
+    }
+  }
+
+  // Handler to navigate back
+  const handleBack = () => {
+    if (canGoBack(navigationStack)) {
+      const newStack = goBack(navigationStack)
+      if (newStack) {
+        setNavigationStack(newStack)
+        const prevPage = getCurrentPage(newStack)
+        setCurrentPageSpec(prevPage)
+      }
+    } else {
+      // No more history, go back to landing
+      setCurrentPageSpec(null)
+    }
+  }
+
   // Handler to return to landing page
   const handleBackToLanding = () => {
     setCurrentPageSpec(null)
+    // Optionally clear navigation stack
+    setNavigationStack(createNavigationStack(5))
   }
 
   // Handler to cancel thinking
@@ -75,21 +147,33 @@ export default function Home() {
         <div className="min-h-screen bg-gradient-to-b from-white via-gray-50 to-white pb-24">
           <div className="container mx-auto px-4 sm:px-6 py-8">
             <div className="max-w-7xl mx-auto">
-              {/* Back to Landing Button */}
-              <button
-                onClick={handleBackToLanding}
-                className="mb-8 flex items-center gap-2 text-[var(--charcoal-gray)] hover:text-[var(--electric-cyan)] transition-all duration-300 font-inter font-medium group"
-              >
-                <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                </svg>
-                <span>Back to Home</span>
-              </button>
+              {/* Back Navigation */}
+              <div className="mb-8 flex items-center gap-4">
+                <button
+                  onClick={handleBack}
+                  className="flex items-center gap-2 text-[var(--charcoal-gray)] hover:text-[var(--electric-cyan)] transition-all duration-300 font-inter font-medium group"
+                >
+                  <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                  </svg>
+                  <span>{canGoBack(navigationStack) ? 'Back' : 'Back to Home'}</span>
+                </button>
+
+                {canGoBack(navigationStack) && (
+                  <button
+                    onClick={handleBackToLanding}
+                    className="text-sm text-[var(--charcoal-gray)] hover:text-[var(--electric-cyan)] transition-colors font-inter"
+                  >
+                    Return to Home
+                  </button>
+                )}
+              </div>
 
               {/* Render Dynamic Page */}
               <div className="dynamic-page-content">
                 <DynamicPageRenderer
                   pageSpec={currentPageSpec}
+                  onInteraction={handleInteraction}
                   onComponentError={(componentType, error) => {
                     console.error(`Component error: ${componentType}`, error)
                   }}

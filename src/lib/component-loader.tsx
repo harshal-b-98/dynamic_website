@@ -79,6 +79,8 @@ export interface DynamicComponentProps {
   spec: ComponentSpec
   index: number
   totalComponents: number
+  pageSpec?: any  // PageSpecification (avoid circular dependency)
+  onInteraction?: (props: any) => void | Promise<void>  // InteractionHandlerProps
 }
 
 /**

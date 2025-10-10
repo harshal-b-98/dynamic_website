@@ -2,14 +2,28 @@
  * CTA Section Component
  *
  * Call-to-action section using shadcn/ui Button
+ * with interactive elements that trigger AI page generation
  */
 
 import { DynamicComponentProps } from '@/lib/component-loader'
 import { Button } from '@/components/ui/button'
 
-export default function CtaSection({ spec }: DynamicComponentProps) {
+export default function CtaSection({ spec, onInteraction }: DynamicComponentProps) {
   const { props, content, styling } = spec
   const theme = styling?.theme || 'brand'
+
+  // Handler for button clicks
+  const handleClick = (label: string, action: string) => {
+    if (onInteraction) {
+      onInteraction({
+        interactionType: 'cta',
+        label,
+        action,
+        intent: action.includes('demo') ? 'request-demo' :
+                action.includes('start') ? 'get-started' : 'learn-more',
+      })
+    }
+  }
 
   const themeClasses = {
     light: 'bg-gray-100',
@@ -39,9 +53,7 @@ export default function CtaSection({ spec }: DynamicComponentProps) {
             <Button
               size="lg"
               variant={theme === 'brand' || theme === 'dark' ? 'secondary' : 'default'}
-              onClick={() => {
-                console.log('Primary CTA clicked:', props.primaryCta || content?.primaryCta)
-              }}
+              onClick={() => handleClick(props.primaryCta || content?.primaryCta, 'primary-cta')}
             >
               {props.primaryCta || content?.primaryCta}
             </Button>
@@ -52,9 +64,7 @@ export default function CtaSection({ spec }: DynamicComponentProps) {
             <Button
               size="lg"
               variant="outline"
-              onClick={() => {
-                console.log('Secondary CTA clicked:', props.secondaryCta || content?.secondaryCta)
-              }}
+              onClick={() => handleClick(props.secondaryCta || content?.secondaryCta, 'secondary-cta')}
             >
               {props.secondaryCta || content?.secondaryCta}
             </Button>

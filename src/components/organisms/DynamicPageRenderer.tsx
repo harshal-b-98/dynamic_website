@@ -16,10 +16,12 @@ import {
   DynamicComponentProps
 } from '@/lib/component-loader'
 import { ComponentErrorBoundary } from './ComponentErrorBoundary'
+import { InteractionHandlerProps } from '@/lib/interaction-types'
 
 export interface DynamicPageRendererProps {
   pageSpec: PageSpecification
   className?: string
+  onInteraction?: (props: InteractionHandlerProps) => void | Promise<void>
   onComponentError?: (componentType: string, error: Error) => void
 }
 
@@ -29,6 +31,7 @@ export interface DynamicPageRendererProps {
 export function DynamicPageRenderer({
   pageSpec,
   className = '',
+  onInteraction,
   onComponentError
 }: DynamicPageRendererProps) {
   const { layout, navigation, metadata } = pageSpec
@@ -71,6 +74,8 @@ export function DynamicPageRenderer({
             spec={componentSpec}
             index={index}
             totalComponents={sortedComponents.length}
+            pageSpec={pageSpec}
+            onInteraction={onInteraction}
             onError={onComponentError}
           />
         ))}
@@ -128,8 +133,12 @@ function DynamicComponent({
   spec,
   index,
   totalComponents,
+  pageSpec,
+  onInteraction,
   onError
 }: DynamicComponentProps & {
+  pageSpec: PageSpecification
+  onInteraction?: (props: InteractionHandlerProps) => void | Promise<void>
   onError?: (componentType: string, error: Error) => void
 }) {
   const Component = getComponent(spec.componentType)
@@ -168,6 +177,8 @@ function DynamicComponent({
             spec={spec}
             index={index}
             totalComponents={totalComponents}
+            pageSpec={pageSpec}
+            onInteraction={onInteraction}
           />
         </div>
       </Suspense>

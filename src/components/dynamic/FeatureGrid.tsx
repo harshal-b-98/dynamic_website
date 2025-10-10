@@ -63,11 +63,23 @@ const IconMap: Record<string, React.FC<{ className?: string }>> = {
   )
 }
 
-export default function FeatureGrid({ spec }: DynamicComponentProps) {
+export default function FeatureGrid({ spec, onInteraction }: DynamicComponentProps) {
   const { props, content, styling } = spec
 
   const features: Feature[] = props.features || content?.features || []
   const columns = props.columns || styling?.variant || '3'
+
+  // Handle feature card clicks
+  const handleFeatureClick = (feature: Feature) => {
+    if (onInteraction) {
+      onInteraction({
+        interactionType: 'feature',
+        label: feature.title,
+        description: feature.description,
+        intent: 'learn-more',
+      })
+    }
+  }
 
   const gridCols = {
     '2': 'grid-cols-1 md:grid-cols-2',
@@ -104,7 +116,8 @@ export default function FeatureGrid({ spec }: DynamicComponentProps) {
           return (
             <div
               key={index}
-              className="feature-card p-6 bg-white border border-gray-200 rounded-xl hover:shadow-xl hover:border-[var(--electric-cyan)] transition-all duration-300 group"
+              onClick={() => handleFeatureClick(feature)}
+              className="feature-card p-6 bg-white border border-gray-200 rounded-xl hover:shadow-xl hover:border-[var(--electric-cyan)] transition-all duration-300 group cursor-pointer"
             >
               {/* Icon */}
               {feature.icon && (
