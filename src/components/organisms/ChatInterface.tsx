@@ -3,7 +3,9 @@
 import React, { useState, useEffect, useRef } from 'react'
 import ChatMessage from '@/components/atoms/ChatMessage'
 import ChatInput from '@/components/molecules/ChatInput'
+import ThinkingProcessView from '@/components/organisms/ThinkingProcessView'
 import { PageSpecification } from '@/lib/page-generation'
+import { useThinkingStream } from '@/lib/use-thinking-stream'
 
 interface Message {
   id: string
@@ -29,9 +31,40 @@ export default function ChatInterface({
   const [conversationId, setConversationId] = useState<string | undefined>(
     initialConversationId
   )
-  const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
+
+  // Use thinking stream hook
+  const {
+    stages,
+    isStreaming,
+    error: streamError,
+    result,
+    startStream,
+    cancelStream
+  } = useThinkingStream({
+    onComplete: (streamResult) => {
+      // Update conversation ID if it's a new conversation
+      if (streamResult.conversationId && !conversationId) {
+        setConversationId(streamResult.conversationId)
+      }
+
+      // Notify parent if page was generated
+      if (streamResult.pageSpec && onPageGenerated) {
+        onPageGenerated(streamResult.pageSpec)
+      }
+
+      // Add both user and assistant messages to the list
+      setMessages((prev) => [
+        ...prev,
+        streamResult.userMessage,
+        streamResult.assistantMessage,
+      ])
+    },
+    onError: (errorMessage) => {
+      setError(errorMessage)
+    }
+  })
 
   // Scroll to bottom when messages change
   useEffect(() => {
@@ -64,56 +97,17 @@ export default function ChatInterface({
   }, [conversationId])
 
   const handleSendMessage = async (messageContent: string) => {
-    setIsLoading(true)
     setError(null)
 
-    try {
-      const response = await fetch('/api/chat/message', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          message: messageContent,
-          conversationId,
-        }),
-      })
-
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to send message')
-      }
-
-      // Update conversation ID if it's a new conversation
-      if (data.conversationId && !conversationId) {
-        setConversationId(data.conversationId)
-      }
-
-      // Notify parent if page was generated
-      if (data.pageSpec && onPageGenerated) {
-        onPageGenerated(data.pageSpec)
-      }
-
-      // Add both user and assistant messages to the list
-      setMessages((prev) => [
-        ...prev,
-        data.userMessage,
-        data.assistantMessage,
-      ])
-    } catch (err) {
-      console.error('Error sending message:', err)
-      setError(err instanceof Error ? err.message : 'Failed to send message')
-    } finally {
-      setIsLoading(false)
-    }
+    // Start the thinking stream
+    await startStream(messageContent, conversationId)
   }
 
   return (
     <div className="flex flex-col h-full bg-white overflow-hidden">
       {/* Messages Container */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
-          {messages.length === 0 && !isLoading && (
+          {messages.length === 0 && !isStreaming && (
             <div className="text-center text-gray-500 mt-8">
               <p className="text-lg mb-2">👋 Welcome!</p>
               <p>Start a conversation by sending a message below.</p>
@@ -130,28 +124,18 @@ export default function ChatInterface({
             />
           ))}
 
-          {isLoading && (
-            <div className="flex justify-start mb-4">
-              <div className="bg-gray-100 rounded-lg px-4 py-3 border border-gray-200">
-                <div className="flex space-x-2">
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                  <div
-                    className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
-                    style={{ animationDelay: '0.1s' }}
-                  ></div>
-                  <div
-                    className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
-                    style={{ animationDelay: '0.2s' }}
-                  ></div>
-                </div>
-              </div>
-            </div>
+          {/* Show thinking process instead of simple loading spinner */}
+          {isStreaming && (
+            <ThinkingProcessView
+              isVisible={true}
+              onCancel={cancelStream}
+            />
           )}
 
-          {error && (
+          {(error || streamError) && (
             <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
               <p className="font-medium">Error</p>
-              <p className="text-sm">{error}</p>
+              <p className="text-sm">{error || streamError}</p>
             </div>
           )}
 
@@ -161,7 +145,7 @@ export default function ChatInterface({
       {/* Input */}
       <ChatInput
         onSendMessage={handleSendMessage}
-        disabled={isLoading}
+        disabled={isStreaming}
         placeholder="Type your message..."
       />
     </div>

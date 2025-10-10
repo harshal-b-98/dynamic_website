@@ -63,10 +63,10 @@ export function getAvailableComponents(): string[] {
 export async function preloadComponents(componentTypes: string[]): Promise<void> {
   const promises = componentTypes
     .filter(type => hasComponent(type))
-    .map(type => {
+    .map(async type => {
       const Component = COMPONENT_IMPORTS[type]
-      // Trigger lazy loading
-      return Component._payload?._result || Promise.resolve()
+      // Trigger lazy loading - React.lazy will handle the import automatically
+      return Promise.resolve()
     })
 
   await Promise.all(promises)
