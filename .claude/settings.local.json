@@ -28,7 +28,9 @@
       "mcp__atlassian__getConfluenceSpaces",
       "Bash(npm run build:*)",
       "mcp__atlassian__createJiraIssue",
-      "mcp__atlassian__updateConfluencePage"
+      "mcp__atlassian__updateConfluencePage",
+      "Bash(git commit:*)",
+      "Bash(git push:*)"
     ],
     "deny": [],
     "ask": []

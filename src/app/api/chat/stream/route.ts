@@ -19,6 +19,26 @@ import { STAGE_MESSAGES } from '@/lib/thinking-process'
  */
 
 export async function POST(request: NextRequest) {
+  // Parse request body BEFORE creating stream
+  let requestBody
+  try {
+    requestBody = await request.json()
+  } catch (e) {
+    return new Response(JSON.stringify({ error: 'Invalid request body' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+
+  const { message, conversationId } = requestBody
+
+  if (!message || typeof message !== 'string') {
+    return new Response(JSON.stringify({ error: 'Message is required' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+
   // Create SSE stream
   const encoder = new TextEncoder()
 
@@ -33,14 +53,6 @@ export async function POST(request: NextRequest) {
       }
 
       try {
-        // Parse request body
-        const { message, conversationId } = await request.json()
-
-        if (!message || typeof message !== 'string') {
-          sendEvent('error', { message: 'Message is required' })
-          controller.close()
-          return
-        }
 
         // Get or create session
         const cookieStore = await cookies()
@@ -61,7 +73,7 @@ export async function POST(request: NextRequest) {
             .insert({
               session_id: session.sessionId,
               user_id: session.userId || null,
-              title: message.substring(0, 50) + (message.length > 50 ? '...' : ''),
+              title: message.substring(0, 50) + (message.length > 50 ? '...' : ''),  // Using message from outer scope
               metadata: {}
             })
             .select()
@@ -84,7 +96,7 @@ export async function POST(request: NextRequest) {
         const intentResponse = await fetch(`${request.nextUrl.origin}/api/intent/classify`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message })
+          body: JSON.stringify({ message: message })
         })
 
         let intent = 'general_conversation'
@@ -117,7 +129,7 @@ export async function POST(request: NextRequest) {
           .insert({
             conversation_id: activeConversationId,
             role: 'user',
-            content: message,
+            content: message,  // Using message from outer scope
             metadata: intentMetadata
           })
           .select()
@@ -216,7 +228,7 @@ Respond helpfully based on the user's intent. Keep responses concise (2-3 paragr
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
-                query: message,
+                query: message,  // Using message from outer scope
                 intent,
                 conversationHistory: conversationHistory.slice(-5),
                 sessionId: session.sessionId
