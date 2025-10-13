@@ -8,7 +8,12 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "kb:populate": "tsx --env-file=.env.local src/scripts/populate-kb.ts",
+    "kb:populate:all": "tsx --env-file=.env.local src/scripts/populate-kb.ts --all",
+    "kb:populate:high": "tsx --env-file=.env.local src/scripts/populate-kb.ts --priority=high",
+    "kb:validate": "tsx --env-file=.env.local src/scripts/validate-kb.ts",
+    "kb:help": "tsx --env-file=.env.local src/scripts/populate-kb.ts --help"
   },
   "repository": {
     "type": "git",
@@ -34,10 +39,14 @@
     "@tailwindcss/postcss": "^4.1.14",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "dotenv": "^17.2.3",
     "iron-session": "^8.0.4",
     "lucide-react": "^0.545.0",
     "lz-string": "^1.5.0",
+    "mammoth": "^1.11.0",
     "next": "^15.5.4",
+    "openai": "^6.3.0",
+    "pdf-parse": "^1.1.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-hook-form": "^7.64.0",
@@ -56,6 +65,7 @@
     "postcss": "^8.5.6",
     "shadcn": "^3.4.0",
     "tailwindcss": "^4.1.14",
+    "tsx": "^4.20.6",
     "typescript": "^5.9.3"
   }
 }

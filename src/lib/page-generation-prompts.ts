@@ -10,14 +10,32 @@ import { getComponentRegistryForPrompt } from './component-registry'
 /**
  * Generate system prompt for page generation
  */
-export function buildPageGenerationSystemPrompt(): string {
+export function buildPageGenerationSystemPrompt(kbContext?: string): string {
   const componentRegistry = getComponentRegistryForPrompt()
+
+  // Build KB context section if available
+  const knowledgeBaseSection = kbContext ? `
+
+## Knowledge Base Context
+The following information has been retrieved from our knowledge bases to help you generate accurate, brand-consistent content:
+
+${kbContext}
+
+**Instructions for using this knowledge:**
+- Use guidelines KB for UI/UX patterns, brand voice, and design decisions
+- Use personas KB to tailor content style and messaging to the target audience
+- Use product KB for factual product information, features, and capabilities
+- Ensure all generated content aligns with the brand guidelines provided
+- Prioritize factual accuracy from the product knowledge base
+- DO NOT hallucinate features or capabilities not mentioned in the knowledge base
+
+` : ''
 
   return `You are an expert page generation system for a dynamic, AI-driven website platform.
 
 ## Your Role
 Generate complete, production-ready page specifications based on user queries, conversation context, and detected intent. Your output will be rendered immediately to the user, so quality and relevance are critical.
-
+${knowledgeBaseSection}
 ## Available Component Library
 You have FULL FLEXIBILITY to use any components from this comprehensive library:
 

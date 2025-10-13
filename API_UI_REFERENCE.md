@@ -5,7 +5,7 @@
 ## Overview
 This document maintains a comprehensive reference of all API endpoints and UI components in the Dynamic AI-Driven Website project.
 
-**Last Updated**: 2025-10-09
+**Last Updated**: 2025-10-13
 
 ---
 
@@ -218,15 +218,103 @@ Generate dynamic page specification using LLM
 - `TIMEOUT`: Generation exceeded 15s (504)
 - `VALIDATION_FAILED`: Schema validation errors (500)
 
-### RAG Retrieval
-_Coming in Epic 2: Story 2.3_
+### RAG & Knowledge Base
+✅ **Implemented in DYN-53 (RAG Integration)**
+
+#### POST /api/knowledge-base/multi-retrieve
+Retrieve relevant content from multiple specialized knowledge bases in parallel
 
 ```typescript
-// POST /api/rag/retrieve
-// Retrieve relevant content chunks
-// Body: { query: string, topK?: number, filters?: Record<string, any> }
-// Response: { results: RetrievalResult[], relevanceScores: number[] }
+// Request Body
+{
+  query: string                  // Search query
+  intent?: string                // User intent for KB weighting (e.g., 'product_inquiry')
+  threshold?: number             // Minimum similarity threshold (0-1, default: 0.7)
+  guidelinesTopK?: number        // Override guidelines KB result count
+  personasTopK?: number          // Override personas KB result count
+  productTopK?: number           // Override product KB result count
+}
+
+// Response
+{
+  success: boolean
+  query: string
+  intent?: string
+  results: {
+    guidelines: RetrievalResult[]   // UI/UX guidelines, brand voice, design patterns
+    personas: RetrievalResult[]     // User persona definitions and characteristics
+    product: RetrievalResult[]      // ConsumerIQ features, capabilities, FAQ
+  }
+  stats: {
+    guidelinesCount: number
+    personasCount: number
+    productCount: number
+    totalCount: number
+    processingTime: number          // Milliseconds
+    averageSimilarity: {
+      guidelines: number
+      personas: number
+      product: number
+    }
+  }
+  weights: {                        // Intent-based KB weighting applied
+    guidelines: 'low' | 'medium' | 'high'
+    personas: 'low' | 'medium' | 'high'
+    product: 'low' | 'medium' | 'high'
+  }
+  processingTime: number            // Total milliseconds
+}
+
+// RetrievalResult Structure
+{
+  contentId: string                 // Unique chunk ID
+  contentType: string               // e.g., 'documentation', 'product', 'faq'
+  contentText: string               // Retrieved text content
+  contentTitle?: string             // Optional: content title
+  similarity: number                // Cosine similarity score (0-1)
+  metadata?: Record<string, any>   // Additional metadata
+}
+
+// Error Response
+{
+  success: false
+  error: string
+}
 ```
+
+**Authentication**: None (internal API)
+**Vector Database**: Supabase pgvector with cosine similarity
+**Knowledge Bases**:
+- **Guidelines KB** 📐: UI component usage, brand voice, design patterns, layout recommendations
+- **Personas KB** 👤: User persona definitions, behavioral characteristics, content preferences
+- **Product KB** 🎯: ConsumerIQ features, capabilities, technical details, FAQ content
+
+**Performance**: ~4-5s (parallel retrieval from 3 KBs)
+**Intent-Based Weighting**: 8 intent types with configurable weight multipliers (low=0.5x, medium=1.0x, high=1.5x)
+**Default topK**: Guidelines: 3, Personas: 2, Product: 5
+
+**Intent Mappings**:
+- `product_inquiry`: guidelines=low, personas=medium, product=high
+- `pricing_request`: guidelines=medium, personas=high, product=high
+- `technical_support`: guidelines=high, personas=low, product=high
+- `demo_request`: guidelines=medium, personas=high, product=medium
+- `general_conversation`: guidelines=medium, personas=medium, product=medium
+- `compliance_question`: guidelines=low, personas=low, product=high
+- `competitor_analysis`: guidelines=medium, personas=medium, product=high
+- `distributor_inquiry`: guidelines=medium, personas=high, product=high
+
+**Features**:
+- Parallel retrieval from 3 specialized KBs using Promise.all
+- Intent-based KB weighting for relevance optimization
+- Token-aware context building for LLM prompts
+- Graceful error handling per KB (failures don't break entire request)
+- Structured sections with icons in LLM context (📐, 👤, 🎯)
+
+**Usage in Page Generation**:
+- Automatically called during POST /api/page/generate
+- Retrieved context (2,000-4,000 tokens) injected into LLM system prompt
+- Enhances content accuracy, brand consistency, and persona awareness
+- Reduces hallucinations by grounding LLM in factual business data
 
 ---
 
@@ -346,3 +434,13 @@ _Epic 1: Story 1.4_
   * Caching layer (30min TTL, 100 entries)
   * Validation and sanitization
   * Performance: <100ms (cached), ~15s (uncached)
+- 2025-10-13: Added DYN-53 implementation details:
+  * POST /api/knowledge-base/multi-retrieve endpoint
+  * Multi-KB architecture: 3 specialized knowledge bases
+  * Guidelines KB 📐, Personas KB 👤, Product KB 🎯
+  * Parallel retrieval with Promise.all
+  * Intent-based KB weighting system (8 intent mappings)
+  * Token-aware context building for LLM prompts
+  * RAG integration into page generation flow
+  * Performance: ~4-5s for 3-KB parallel retrieval
+  * Graceful error handling per KB
