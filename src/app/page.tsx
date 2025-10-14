@@ -120,23 +120,34 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-surface-white">
-      {/* Navigation */}
-      <nav className="border-b border-light-data-gray bg-surface-white z-50 relative">
+      {/* Navigation - Sticky */}
+      <nav className="sticky top-0 z-50 backdrop-blur-sm" style={{ backgroundColor: '#0A1930', borderBottom: '1px solid rgba(0, 200, 255, 0.1)' }}>
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="w-10 h-10 bg-deep-indigo rounded flex items-center justify-center">
-                <span className="text-electric-cyan font-mont font-bold text-xl">C</span>
+              <div className="w-10 h-10 rounded flex items-center justify-center" style={{ backgroundColor: '#00C8FF' }}>
+                <span className="font-mont font-bold text-xl" style={{ color: '#0A1930' }}>C</span>
               </div>
-              <span className="text-2xl font-mont font-bold text-deep-indigo">ConsumerIQ</span>
+              <span className="text-2xl font-mont font-bold" style={{ color: '#FFFFFF' }}>ConsumerIQ</span>
             </div>
             <div className="hidden md:flex items-center gap-8">
-              <a href="#features" className="text-charcoal-gray hover:text-deep-indigo transition-colors font-inter">Features</a>
-              <a href="#functions" className="text-charcoal-gray hover:text-deep-indigo transition-colors font-inter">Functions</a>
-              <a href="#solution" className="text-charcoal-gray hover:text-deep-indigo transition-colors font-inter">Solution</a>
-              <button className="px-5 py-2.5 bg-electric-cyan text-deep-indigo font-inter font-semibold rounded-lg hover:bg-deep-indigo hover:text-electric-cyan transition-colors">
-                Talk to Our Team
-              </button>
+              <a href="#features" className="font-inter transition-colors" style={{ color: '#FFFFFF' }}
+                onMouseOver={(e) => e.currentTarget.style.color = '#00C8FF'}
+                onMouseOut={(e) => e.currentTarget.style.color = '#FFFFFF'}>Features</a>
+              <a href="#solution" className="font-inter transition-colors" style={{ color: '#FFFFFF' }}
+                onMouseOver={(e) => e.currentTarget.style.color = '#00C8FF'}
+                onMouseOut={(e) => e.currentTarget.style.color = '#FFFFFF'}>Solution</a>
+              <a href="#functions" className="font-inter transition-colors" style={{ color: '#FFFFFF' }}
+                onMouseOver={(e) => e.currentTarget.style.color = '#00C8FF'}
+                onMouseOut={(e) => e.currentTarget.style.color = '#FFFFFF'}>Functions</a>
+              <a href="#contact">
+                <button className="px-6 py-2.5 rounded-lg font-mont font-semibold transition-all shadow-md"
+                  style={{ backgroundColor: '#00C8FF', color: '#0A1930' }}
+                  onMouseOver={(e) => { e.currentTarget.style.backgroundColor = '#FFFFFF'; e.currentTarget.style.color = '#0A1930'; }}
+                  onMouseOut={(e) => { e.currentTarget.style.backgroundColor = '#00C8FF'; e.currentTarget.style.color = '#0A1930'; }}>
+                  Talk to Our Team
+                </button>
+              </a>
             </div>
           </div>
         </div>
@@ -197,24 +208,30 @@ export default function Home() {
               Spot opportunities early. Prove promotional impact. Outmaneuver competitors. ConsumerIQ gives U.S. beverage alcohol suppliers real-time market intelligence—without the data chaos.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="px-8 py-4 rounded-lg font-mont font-semibold text-lg transition-all shadow-lg"
-                style={{ backgroundColor: '#00C8FF', color: '#0A1930' }}
-                onMouseOver={(e) => { e.currentTarget.style.backgroundColor = '#0A1930'; e.currentTarget.style.color = '#00C8FF'; e.currentTarget.style.outline = '2px solid #00C8FF'; }}
-                onMouseOut={(e) => { e.currentTarget.style.backgroundColor = '#00C8FF'; e.currentTarget.style.color = '#0A1930'; e.currentTarget.style.outline = 'none'; }}>
-                Explore Solutions
-              </button>
-              <button className="px-8 py-4 bg-transparent rounded-lg border-2 font-mont font-semibold text-lg transition-all"
-                style={{ color: '#FFFFFF', borderColor: '#00C8FF' }}
-                onMouseOver={(e) => { e.currentTarget.style.backgroundColor = '#00C8FF'; e.currentTarget.style.color = '#0A1930'; }}
-                onMouseOut={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = '#FFFFFF'; }}>
-                See How It Works
-              </button>
-              <button className="px-8 py-4 rounded-lg border-2 font-mont font-semibold text-lg transition-all"
-                style={{ backgroundColor: '#0A1930', color: '#00C8FF', borderColor: '#00C8FF' }}
-                onMouseOver={(e) => { e.currentTarget.style.backgroundColor = '#00C8FF'; e.currentTarget.style.color = '#0A1930'; }}
-                onMouseOut={(e) => { e.currentTarget.style.backgroundColor = '#0A1930'; e.currentTarget.style.color = '#00C8FF'; }}>
-                Talk to Our Team
-              </button>
+              <a href="#solution">
+                <button className="px-8 py-4 rounded-lg font-mont font-semibold text-lg transition-all shadow-lg"
+                  style={{ backgroundColor: '#00C8FF', color: '#0A1930' }}
+                  onMouseOver={(e) => { e.currentTarget.style.backgroundColor = '#0A1930'; e.currentTarget.style.color = '#00C8FF'; e.currentTarget.style.outline = '2px solid #00C8FF'; }}
+                  onMouseOut={(e) => { e.currentTarget.style.backgroundColor = '#00C8FF'; e.currentTarget.style.color = '#0A1930'; e.currentTarget.style.outline = 'none'; }}>
+                  Explore Solutions
+                </button>
+              </a>
+              <a href="#features">
+                <button className="px-8 py-4 bg-transparent rounded-lg border-2 font-mont font-semibold text-lg transition-all"
+                  style={{ color: '#FFFFFF', borderColor: '#00C8FF' }}
+                  onMouseOver={(e) => { e.currentTarget.style.backgroundColor = '#00C8FF'; e.currentTarget.style.color = '#0A1930'; }}
+                  onMouseOut={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = '#FFFFFF'; }}>
+                  See How It Works
+                </button>
+              </a>
+              <a href="#contact">
+                <button className="px-8 py-4 rounded-lg border-2 font-mont font-semibold text-lg transition-all"
+                  style={{ backgroundColor: '#0A1930', color: '#00C8FF', borderColor: '#00C8FF' }}
+                  onMouseOver={(e) => { e.currentTarget.style.backgroundColor = '#00C8FF'; e.currentTarget.style.color = '#0A1930'; }}
+                  onMouseOut={(e) => { e.currentTarget.style.backgroundColor = '#0A1930'; e.currentTarget.style.color = '#00C8FF'; }}>
+                  Talk to Our Team
+                </button>
+              </a>
             </div>
           </div>
         </div>
@@ -357,6 +374,46 @@ export default function Home() {
               <p className="font-inter font-semibold" style={{ color: '#00C8FF' }}>
                 Value: Reduce time-to-market and eliminate costly resubmissions.
               </p>
+            </div>
+
+            {/* CTA Card */}
+            <div className="rounded-xl p-8 border-2 transition-all duration-300 flex flex-col justify-between"
+              style={{ backgroundColor: '#FFFFFF', borderColor: 'rgba(0, 200, 255, 0.3)' }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.borderColor = '#00C8FF';
+                e.currentTarget.style.transform = 'scale(1.05)';
+                e.currentTarget.style.boxShadow = '0 20px 50px rgba(0, 200, 255, 0.3)';
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(0, 200, 255, 0.3)';
+                e.currentTarget.style.transform = 'scale(1)';
+                e.currentTarget.style.boxShadow = 'none';
+              }}>
+              <div>
+                <div className="w-14 h-14 rounded-lg flex items-center justify-center mb-6" style={{ backgroundColor: 'rgba(0, 200, 255, 0.1)' }}>
+                  <FeatherIcon name="arrow-right" size={32} color="#00C8FF" strokeWidth={2} />
+                </div>
+                <h3 className="text-xl font-mont font-bold mb-3" style={{ color: '#0A1930' }}>Ready to Transform Your Data Strategy?</h3>
+                <p className="font-inter mb-6 leading-relaxed" style={{ color: '#333333' }}>
+                  See how ConsumerIQ can help your team make faster, smarter decisions with unified market intelligence built specifically for beverage alcohol suppliers.
+                </p>
+              </div>
+              <a href="#contact" className="inline-block">
+                <button className="w-full px-6 py-4 rounded-lg font-mont font-semibold text-lg transition-all duration-300"
+                  style={{ backgroundColor: '#00C8FF', color: '#0A1930' }}
+                  onMouseOver={(e) => {
+                    e.currentTarget.style.backgroundColor = '#0A1930';
+                    e.currentTarget.style.color = '#00C8FF';
+                    e.currentTarget.style.outline = '2px solid #00C8FF';
+                  }}
+                  onMouseOut={(e) => {
+                    e.currentTarget.style.backgroundColor = '#00C8FF';
+                    e.currentTarget.style.color = '#0A1930';
+                    e.currentTarget.style.outline = 'none';
+                  }}>
+                  Talk to Our Team
+                </button>
+              </a>
             </div>
           </div>
         </div>
@@ -602,18 +659,22 @@ export default function Home() {
               The U.S. beverage alcohol market rewards speed, precision, and intelligence. ConsumerIQ delivers the unified analytics foundation your team needs to compete—and win.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="px-10 py-4 rounded-lg font-mont font-bold text-lg transition-all shadow-lg"
-                style={{ backgroundColor: '#FFFFFF', color: '#0A1930' }}
-                onMouseOver={(e) => { e.currentTarget.style.backgroundColor = '#0A1930'; e.currentTarget.style.color = '#FFFFFF'; e.currentTarget.style.outline = '2px solid #FFFFFF'; }}
-                onMouseOut={(e) => { e.currentTarget.style.backgroundColor = '#FFFFFF'; e.currentTarget.style.color = '#0A1930'; e.currentTarget.style.outline = 'none'; }}>
-                Schedule a Demo
-              </button>
-              <button className="px-10 py-4 rounded-lg border-2 font-mont font-bold text-lg transition-all"
-                style={{ backgroundColor: 'transparent', color: '#FFFFFF', borderColor: '#FFFFFF' }}
-                onMouseOver={(e) => { e.currentTarget.style.backgroundColor = '#FFFFFF'; e.currentTarget.style.color = '#0A1930'; }}
-                onMouseOut={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = '#FFFFFF'; }}>
-                View FAQ
-              </button>
+              <a href="#contact">
+                <button className="px-10 py-4 rounded-lg font-mont font-bold text-lg transition-all shadow-lg"
+                  style={{ backgroundColor: '#FFFFFF', color: '#0A1930' }}
+                  onMouseOver={(e) => { e.currentTarget.style.backgroundColor = '#0A1930'; e.currentTarget.style.color = '#FFFFFF'; e.currentTarget.style.outline = '2px solid #FFFFFF'; }}
+                  onMouseOut={(e) => { e.currentTarget.style.backgroundColor = '#FFFFFF'; e.currentTarget.style.color = '#0A1930'; e.currentTarget.style.outline = 'none'; }}>
+                  Schedule a Demo
+                </button>
+              </a>
+              <a href="#faq">
+                <button className="px-10 py-4 rounded-lg border-2 font-mont font-bold text-lg transition-all"
+                  style={{ backgroundColor: 'transparent', color: '#FFFFFF', borderColor: '#FFFFFF' }}
+                  onMouseOver={(e) => { e.currentTarget.style.backgroundColor = '#FFFFFF'; e.currentTarget.style.color = '#0A1930'; }}
+                  onMouseOut={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = '#FFFFFF'; }}>
+                  View FAQ
+                </button>
+              </a>
             </div>
           </div>
         </div>
