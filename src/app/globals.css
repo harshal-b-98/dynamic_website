@@ -50,11 +50,29 @@
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: var(--font-inter), 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  line-height: 1.6;
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: var(--font-montserrat), 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  line-height: 1.5;
+}
+
+/* ConsumerIQ Brand Typography Rules */
+h1 {
+  font-weight: 700; /* Bold */
+  font-size: clamp(32px, 8vw, 56px);
+}
+
+h2 {
+  font-weight: 700; /* Bold */
+  font-size: clamp(28px, 6vw, 48px);
+}
+
+h3 {
+  font-weight: 600; /* Semi-Bold */
+  font-size: clamp(20px, 4vw, 32px);
 }
 
 /* Dynamic Page Renderer Animations */
@@ -283,4 +301,186 @@ html {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* ConsumerIQ Brand Utility Classes */
+.ciq-hero-bg {
+  background: linear-gradient(to bottom, #0A1930, #000000);
+}
+
+.ciq-hero-title {
+  color: #FFFFFF;
+  font-family: var(--font-montserrat), 'Montserrat', sans-serif;
+  font-weight: 700;
+}
+
+.ciq-hero-subtitle {
+  color: #FFFFFF;
+  font-family: var(--font-inter), 'Inter', sans-serif;
+}
+
+.ciq-cta-primary {
+  background-color: #00C8FF;
+  color: #0A1930;
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  font-weight: 500;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  transition: all 0.3s;
+}
+
+.ciq-cta-primary:hover {
+  background-color: #0A1930;
+  color: #00C8FF;
+  box-shadow: 0 0 0 2px #00C8FF;
+}
+
+.ciq-cta-secondary {
+  background-color: #FFFFFF;
+  color: #0A1930;
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  font-weight: 500;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  transition: all 0.3s;
+}
+
+.ciq-cta-secondary:hover {
+  background-color: #0A1930;
+  color: #FFFFFF;
+  box-shadow: 0 0 0 2px #00C8FF;
+}
+
+.ciq-pain-section {
+  background-color: #EBEFF2;
+}
+
+.ciq-pain-title {
+  color: #0A1930;
+  font-family: var(--font-montserrat), 'Montserrat', sans-serif;
+  font-weight: 700;
+}
+
+.ciq-pain-text {
+  color: #333333;
+  font-family: var(--font-inter), 'Inter', sans-serif;
+}
+
+.ciq-feature-section {
+  background-color: #0A1930;
+}
+
+.ciq-feature-title {
+  color: #FFFFFF;
+  font-family: var(--font-montserrat), 'Montserrat', sans-serif;
+  font-weight: 700;
+}
+
+.ciq-feature-name {
+  color: #00C8FF;
+  font-family: var(--font-montserrat), 'Montserrat', sans-serif;
+  font-weight: 600;
+}
+
+.ciq-feature-text {
+  color: #FFFFFF;
+  font-family: var(--font-inter), 'Inter', sans-serif;
+}
+
+.ciq-feature-icon {
+  color: #00C8FF;
+}
+
+.ciq-solution-bg-light {
+  background-color: #FFFFFF;
+}
+
+.ciq-solution-bg-gray {
+  background-color: #EBEFF2;
+}
+
+.ciq-solution-title {
+  color: #0A1930;
+  font-family: var(--font-montserrat), 'Montserrat', sans-serif;
+  font-weight: 700;
+}
+
+.ciq-data-spine {
+  color: #00C8FF;
+}
+
+.ciq-sales-bg {
+  background-color: #EBEFF2;
+}
+
+.ciq-innovation-bg {
+  background-color: #0A1930;
+}
+
+.ciq-sales-metric {
+  color: #AA6C39;
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  font-weight: 600;
+}
+
+.ciq-marketing-metric {
+  color: #00C8FF;
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  font-weight: 600;
+}
+
+.ciq-success {
+  color: #198038;
+}
+
+.ciq-alert {
+  color: #DA1E28;
+}
+
+.ciq-final-cta-bg {
+  background-color: #00C8FF;
+}
+
+.ciq-final-cta-title {
+  color: #0A1930;
+  font-family: var(--font-montserrat), 'Montserrat', sans-serif;
+  font-weight: 700;
+}
+
+.ciq-final-cta-subtitle {
+  color: #FFFFFF;
+  font-family: var(--font-inter), 'Inter', sans-serif;
+}
+
+.ciq-body-base {
+  font-size: 1rem;
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  line-height: 1.6;
+}
+
+.ciq-body-large {
+  font-size: 1.125rem;
+  font-family: var(--font-inter), 'Inter', sans-serif;
+  line-height: 1.6;
+}
+
+.ciq-label {
+  font-size: 0.875rem;
+  font-family: var(--font-inter), 'Inter', sans-serif;
+}
+
+.ciq-text-on-dark {
+  color: #FFFFFF;
+}
+
+.ciq-text-on-light {
+  color: #0A1930;
+}
+
+.ciq-gradient-hero {
+  background: linear-gradient(to bottom, #0A1930, #000000);
+}
+
+.ciq-gradient-cta {
+  background: linear-gradient(to right, #00C8FF, #0099CC);
 }
