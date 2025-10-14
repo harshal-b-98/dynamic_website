@@ -2,9 +2,11 @@
  * Feature Grid Component
  *
  * Grid layout displaying features with icons, titles, and descriptions
+ * Enhanced with shadcn/Vercel/Tailwind design system standards
  */
 
 import { DynamicComponentProps } from '@/lib/component-loader'
+import { typography, shadows, animations, grids, sizes, radius } from '@/lib/design-system'
 
 interface Feature {
   icon?: string
@@ -81,32 +83,29 @@ export default function FeatureGrid({ spec, onInteraction }: DynamicComponentPro
     }
   }
 
-  const gridCols = {
-    '2': 'grid-cols-1 md:grid-cols-2',
-    '3': 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
-    '4': 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4'
-  }
-
-  const gridClass = gridCols[columns as keyof typeof gridCols] || gridCols['3']
+  // Use design system grids
+  const gridClass = columns === '2' ? grids.features['2col'] :
+                    columns === '4' ? grids.features['4col'] :
+                    grids.features['3col'] // Default to 3 columns
 
   return (
     <div className="feature-grid">
       {/* Section Header */}
       {(props.title || content?.title) && (
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+          <h2 className={`${typography.h2} text-gray-900 mb-4`}>
             {props.title || content?.title}
           </h2>
           {(props.subtitle || content?.subtitle) && (
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <p className={`${typography.body.lg} text-gray-600 max-w-2xl mx-auto`}>
               {props.subtitle || content?.subtitle}
             </p>
           )}
         </div>
       )}
 
-      {/* Features Grid */}
-      <div className={`grid ${gridClass} gap-6 lg:gap-8`}>
+      {/* Features Grid - Using design system */}
+      <div className={gridClass}>
         {features.map((feature, index) => {
           // Get the appropriate icon component
           const IconComponent = feature.icon && IconMap[feature.icon]
@@ -117,7 +116,7 @@ export default function FeatureGrid({ spec, onInteraction }: DynamicComponentPro
             <div
               key={index}
               onClick={() => handleFeatureClick(feature)}
-              className="feature-card p-6 bg-white border border-gray-200 rounded-xl hover:shadow-xl hover:border-[var(--electric-cyan)] transition-all duration-300 group cursor-pointer"
+              className={`feature-card ${sizes.card.lg} bg-white border border-gray-200 ${radius.xl} ${shadows.md} ${animations.hoverLift} hover:border-[var(--electric-cyan)] group cursor-pointer`}
             >
               {/* Icon */}
               {feature.icon && (
@@ -125,7 +124,7 @@ export default function FeatureGrid({ spec, onInteraction }: DynamicComponentPro
                   {feature.icon.startsWith('http') ? (
                     <img src={feature.icon} alt="" className="w-12 h-12" />
                   ) : (
-                    <div className="w-14 h-14 bg-gradient-to-br from-[var(--electric-cyan)] to-[var(--deep-indigo)] rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <div className={`w-14 h-14 bg-gradient-to-br from-[var(--electric-cyan)] to-[var(--deep-indigo)] ${radius.xl} flex items-center justify-center ${animations.hoverScale}`}>
                       <div className="text-white">
                         <IconComponent className="w-7 h-7" />
                       </div>
@@ -135,12 +134,12 @@ export default function FeatureGrid({ spec, onInteraction }: DynamicComponentPro
               )}
 
               {/* Title */}
-              <h3 className="text-xl font-semibold text-[var(--charcoal-gray)] mb-3 font-mont">
+              <h3 className={`${typography.h4} text-[var(--charcoal-gray)] mb-3`}>
                 {feature.title}
               </h3>
 
               {/* Description */}
-              <p className="text-[var(--charcoal-gray)] opacity-80 leading-relaxed font-inter break-words">
+              <p className={`${typography.body.md} text-gray-600 break-words`}>
                 {feature.description}
               </p>
 

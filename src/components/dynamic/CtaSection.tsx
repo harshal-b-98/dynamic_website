@@ -3,10 +3,12 @@
  *
  * Call-to-action section using shadcn/ui Button
  * with interactive elements that trigger AI page generation
+ * Enhanced with shadcn/Vercel/Tailwind design system standards
  */
 
 import { DynamicComponentProps } from '@/lib/component-loader'
 import { Button } from '@/components/ui/button'
+import { typography, sizes, radius, animations } from '@/lib/design-system'
 
 export default function CtaSection({ spec, onInteraction }: DynamicComponentProps) {
   const { props, content, styling } = spec
@@ -32,16 +34,16 @@ export default function CtaSection({ spec, onInteraction }: DynamicComponentProp
   }
 
   return (
-    <section className={`cta-section ${themeClasses[theme]} -mx-4 px-4 md:-mx-8 md:px-8 py-16 rounded-lg`}>
+    <section className={`cta-section ${themeClasses[theme]} -mx-4 px-4 md:-mx-8 md:px-8 ${sizes.section.lg} ${radius['2xl']}`}>
       <div className="max-w-4xl mx-auto text-center">
         {/* Headline */}
-        <h2 className="text-3xl md:text-4xl font-bold mb-4">
+        <h2 className={`${typography.h2} mb-4`}>
           {props.headline || content?.headline || 'Ready to get started?'}
         </h2>
 
         {/* Description */}
         {(props.description || content?.description) && (
-          <p className="text-lg md:text-xl mb-8 opacity-90">
+          <p className={`${typography.body.lg} mb-8 opacity-90`}>
             {props.description || content?.description}
           </p>
         )}

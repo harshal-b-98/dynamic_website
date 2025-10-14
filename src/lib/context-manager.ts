@@ -54,23 +54,26 @@ export class ContextManager {
       }
     }
 
-    // Get conversation from Supabase
-    const { data: conversation, error: convError } = await supabaseAdmin
-      .from('dyn_conversations')
-      .select('*')
-      .eq('id', conversationId)
-      .single()
+    // Get conversation and messages in parallel (fixes N+1 query bug)
+    const [conversationResult, messagesResult] = await Promise.all([
+      supabaseAdmin
+        .from('dyn_conversations')
+        .select('*')
+        .eq('id', conversationId)
+        .single(),
+      supabaseAdmin
+        .from('dyn_messages')
+        .select('*')
+        .eq('conversation_id', conversationId)
+        .order('created_at', { ascending: true })
+    ])
+
+    const { data: conversation, error: convError } = conversationResult
+    const { data: messages, error: msgError } = messagesResult
 
     if (convError || !conversation) {
       throw new Error(`Conversation not found: ${conversationId}`)
     }
-
-    // Get messages for this conversation
-    const { data: messages, error: msgError } = await supabaseAdmin
-      .from('dyn_messages')
-      .select('*')
-      .eq('conversation_id', conversationId)
-      .order('created_at', { ascending: true })
 
     if (msgError) {
       throw new Error(`Failed to fetch messages: ${msgError.message}`)
@@ -241,24 +244,27 @@ export class ContextManager {
     const messageLimit = options.messageLimit || 10
     const pageLimit = options.pageLimit || 5
 
-    // Get conversation
-    const { data: conversation } = await supabaseAdmin
-      .from('dyn_conversations')
-      .select('*')
-      .eq('id', conversationId)
-      .single()
+    // Get conversation and recent messages in parallel (fixes N+1 query bug)
+    const [conversationResult, messagesResult] = await Promise.all([
+      supabaseAdmin
+        .from('dyn_conversations')
+        .select('*')
+        .eq('id', conversationId)
+        .single(),
+      supabaseAdmin
+        .from('dyn_messages')
+        .select('*')
+        .eq('conversation_id', conversationId)
+        .order('created_at', { ascending: false })
+        .limit(messageLimit)
+    ])
+
+    const { data: conversation } = conversationResult
+    const { data: messages } = messagesResult
 
     if (!conversation) {
       throw new Error(`Conversation not found: ${conversationId}`)
     }
-
-    // Get recent messages
-    const { data: messages } = await supabaseAdmin
-      .from('dyn_messages')
-      .select('*')
-      .eq('conversation_id', conversationId)
-      .order('created_at', { ascending: false })
-      .limit(messageLimit)
 
     const recentMessages = this.mapMessages((messages || []).reverse())
     const recentPages = (conversation.metadata?.pages || []).slice(-pageLimit)

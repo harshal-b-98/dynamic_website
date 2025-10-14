@@ -47,10 +47,10 @@ export default function InteractionHandler({
         interactionType,
         label,
         action,
-        intent,
+        intent: intent || 'unknown',  // Default to 'unknown' if not specified
         description,
         href,
-      })
+      } as any)  // Type assertion needed since we're passing partial InteractionContext
     }
   }
 

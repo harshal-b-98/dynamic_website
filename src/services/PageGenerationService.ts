@@ -22,8 +22,28 @@ import { getCachedPage, cachePage } from '@/lib/page-cache'
 import { ServiceResult } from './types'
 import { v4 as uuidv4 } from 'uuid'
 // RAG integration
-import { retrieveFromMultipleKBs } from '@/lib/knowledge-base/multi-kb-retriever'
+import { retrieveFromMultipleKBsEnhanced, type EnhancedRetrievalResult } from '@/lib/knowledge-base/multi-kb-retriever'
 import { getContextBuilder } from '@/lib/rag/context-builder'
+// UI Quality Validation
+import { validateAndCorrectUIQuality, getQualityReport } from '@/lib/ui-quality-validator'
+// RAG Content Validation
+import { validateGeneratedContent, type ContentValidationResult } from '@/lib/rag/content-validator'
+// Intelligent Fallback
+import {
+  determineGenerationMode,
+  buildModeSpecificPrompt,
+  addGenerationMetadata,
+  shouldRegenerate,
+  getModeSpecificUserMessage,
+  type GenerationModeResult
+} from '@/lib/rag/fallback-handler'
+// Validation Reporting
+import {
+  logValidationReport,
+  logShortSummary,
+  extractMetrics,
+  type ValidationReportData
+} from '@/lib/rag/validation-report'
 
 export interface PageGenerationResponse {
   pageSpec: PageSpecification
@@ -133,7 +153,7 @@ export class PageGenerationService {
   }
 
   /**
-   * Generate page with retry logic
+   * Generate page with retry logic and RAG validation
    */
   private async generateWithRetry(
     request: PageGenerationRequest,
@@ -143,57 +163,105 @@ export class PageGenerationService {
     let pageSpec: PageSpecification | null = null
     let lastError: string | null = null
     let attempts = 0
+    let previousValidation: ContentValidationResult | undefined
+    let enhancedRetrieval: EnhancedRetrievalResult | null = null
+    let kbContext = ''
 
     while (attempts < this.maxRetryAttempts && !pageSpec) {
       attempts++
 
       try {
-        // Step 1: Retrieve relevant context from knowledge bases (with graceful fallback)
-        let kbContext = ''
-        try {
-          console.log(`Retrieving knowledge base context for intent: ${request.intent}`)
-          const kbRetrieval = await retrieveFromMultipleKBs(request.query, {
-            intent: request.intent,
-            threshold: 0.7
-          })
+        // Step 1: Enhanced KB Retrieval with coverage analysis (once per request)
+        if (!enhancedRetrieval) {
+          try {
+            console.log(`\n🔍 Retrieving knowledge base context for intent: ${request.intent}`)
+            enhancedRetrieval = await retrieveFromMultipleKBsEnhanced(request.query, {
+              intent: request.intent,
+              threshold: 0.7
+            })
 
-          console.log(`KB retrieval stats:`, {
-            guidelines: kbRetrieval.guidelines.length,
-            personas: kbRetrieval.personas.length,
-            product: kbRetrieval.product.length,
-            total: kbRetrieval.totalResults,
-            processingTime: kbRetrieval.processingTime
-          })
+            console.log(`📚 KB Retrieval Complete:`)
+            console.log(`  Coverage: ${enhancedRetrieval.metadata.coverageScore}%`)
+            console.log(`  Relevance: ${(enhancedRetrieval.metadata.averageRelevance * 100).toFixed(1)}%`)
+            console.log(`  Results: ${enhancedRetrieval.totalResults} (${enhancedRetrieval.processingTime}ms)`)
+            console.log(`  Aspects: ${enhancedRetrieval.metadata.coveredAspects.length}/${enhancedRetrieval.metadata.queryAspects.length} covered`)
 
-          // Build structured context from multiple KBs
-          if (kbRetrieval.totalResults > 0) {
-            const contextBuilder = getContextBuilder()
-            const builtContext = contextBuilder.buildMultiKBContext(
-              kbRetrieval.guidelines,
-              kbRetrieval.personas,
-              kbRetrieval.product,
-              request.query,
-              {
-                maxTokens: 4000,
-                format: 'markdown',
-                includeMetadata: false
+            // Build structured context from multiple KBs
+            if (enhancedRetrieval.totalResults > 0) {
+              const contextBuilder = getContextBuilder()
+              const builtContext = contextBuilder.buildMultiKBContext(
+                enhancedRetrieval.guidelines,
+                enhancedRetrieval.personas,
+                enhancedRetrieval.product,
+                request.query,
+                {
+                  maxTokens: 4000,
+                  format: 'markdown',
+                  includeMetadata: false
+                }
+              )
+              kbContext = builtContext.context
+              console.log(`  Built context: ${builtContext.tokenCount} tokens`)
+            } else {
+              console.warn('⚠️  No relevant KB content found')
+            }
+          } catch (ragError) {
+            console.error('❌ RAG retrieval failed:', ragError)
+            // Create minimal metadata for fallback
+            enhancedRetrieval = {
+              guidelines: [],
+              personas: [],
+              product: [],
+              totalResults: 0,
+              processingTime: 0,
+              weights: { guidelines: 1, personas: 1, product: 1 },
+              metadata: {
+                averageRelevance: 0,
+                minRelevance: 0,
+                maxRelevance: 0,
+                relevanceStats: {
+                  averageRelevance: 0,
+                  minRelevance: 0,
+                  maxRelevance: 0,
+                  highRelevanceCount: 0,
+                  mediumRelevanceCount: 0,
+                  lowRelevanceCount: 0
+                },
+                coverageScore: 0,
+                queryAspects: [],
+                coveredAspects: [],
+                uncoveredAspects: [],
+                topSources: [],
+                missingTopics: [],
+                lowConfidenceAreas: [],
+                retrievalTime: 0,
+                tokensRetrieved: 0,
+                extractedAspects: []
               }
-            )
-            kbContext = builtContext.context
-            console.log(`Built KB context: ${builtContext.tokenCount} tokens, ${builtContext.resultsIncluded} results`)
-          } else {
-            console.warn('No relevant KB content found, proceeding without RAG context')
+            }
           }
-        } catch (ragError) {
-          console.error('RAG retrieval failed, proceeding without KB context:', ragError)
-          // Continue without RAG context - graceful degradation
         }
 
-        // Step 2: Build prompts (with optional KB context)
-        const systemPrompt = buildPageGenerationSystemPrompt(kbContext)
-        const userMessage = attempts === 1
+        // Step 2: Determine generation mode and build prompts
+        const modeResult = determineGenerationMode(
+          enhancedRetrieval.metadata.coverageScore,
+          previousValidation,
+          attempts
+        )
+
+        console.log(`\n🎯 Generation Mode: ${modeResult.mode}`)
+        console.log(`   ${modeResult.reason}`)
+
+        // Build mode-specific prompt
+        let systemPrompt = buildPageGenerationSystemPrompt(kbContext)
+        systemPrompt = buildModeSpecificPrompt(systemPrompt, modeResult, kbContext)
+
+        // Build user message with mode-specific additions
+        let userMessage = attempts === 1
           ? buildPageGenerationUserMessage(request)
           : buildErrorRecoveryPrompt(request.query, lastError || 'Previous attempt failed')
+
+        userMessage += '\n\n' + getModeSpecificUserMessage(modeResult)
 
         // Call Claude API with timeout
         const controller = new AbortController()
@@ -267,6 +335,75 @@ export class PageGenerationService {
           if (corrections.length > 0) {
             console.log('Auto-corrections applied:', corrections)
             pageSpec = corrected
+          }
+
+          // Step 3: RAG Content Validation
+          let contentValidation: ContentValidationResult | undefined
+          if (modeResult.expectValidation && enhancedRetrieval) {
+            console.log('\n📋 Running RAG content validation...')
+            contentValidation = validateGeneratedContent(
+              pageSpec,
+              kbContext,
+              enhancedRetrieval.metadata
+            )
+
+            // Generate and log validation report
+            const reportData: ValidationReportData = {
+              retrievalMetadata: enhancedRetrieval.metadata,
+              validationResult: contentValidation,
+              modeResult,
+              generationTime: Date.now() - startTime,
+              attemptNumber: attempts
+            }
+
+            logValidationReport(reportData)
+
+            // Check if regeneration is needed
+            const regenerationCheck = shouldRegenerate(contentValidation, attempts, this.maxRetryAttempts)
+
+            if (regenerationCheck.shouldRegenerate) {
+              console.warn(`\n🔄 Regeneration needed: ${regenerationCheck.reason}`)
+              previousValidation = contentValidation
+              pageSpec = null
+              continue // Retry generation
+            }
+
+            // Add generation metadata to page spec
+            pageSpec = addGenerationMetadata(
+              pageSpec,
+              modeResult,
+              enhancedRetrieval.metadata,
+              contentValidation
+            )
+          } else {
+            console.log('\n⏭️  Skipping content validation (beyond KB scope or no KB data)')
+
+            // Still add basic generation metadata
+            if (enhancedRetrieval) {
+              pageSpec = addGenerationMetadata(
+                pageSpec,
+                modeResult,
+                enhancedRetrieval.metadata
+              )
+            }
+          }
+
+          // Step 4: UI Quality Validation & Auto-Correction
+          console.log('\n🎨 Running UI quality validation...')
+          const qualityResult = validateAndCorrectUIQuality(pageSpec)
+
+          // Log quality report
+          console.log(getQualityReport(qualityResult))
+
+          // Use corrected page spec
+          pageSpec = qualityResult.corrected
+
+          // Warn if quality score is low
+          if (qualityResult.score < 60) {
+            console.warn(`⚠️ Low UI quality score: ${qualityResult.score}/100`)
+            console.warn('Critical issues:', qualityResult.issues.filter(i => i.severity === 'critical'))
+          } else if (qualityResult.score >= 90) {
+            console.log(`✨ Excellent UI quality score: ${qualityResult.score}/100`)
           }
 
           // Log success metrics

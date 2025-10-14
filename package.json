@@ -13,7 +13,9 @@
     "kb:populate:all": "tsx --env-file=.env.local src/scripts/populate-kb.ts --all",
     "kb:populate:high": "tsx --env-file=.env.local src/scripts/populate-kb.ts --priority=high",
     "kb:validate": "tsx --env-file=.env.local src/scripts/validate-kb.ts",
-    "kb:help": "tsx --env-file=.env.local src/scripts/populate-kb.ts --help"
+    "kb:help": "tsx --env-file=.env.local src/scripts/populate-kb.ts --help",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "repository": {
     "type": "git",
@@ -66,6 +68,13 @@
     "shadcn": "^3.4.0",
     "tailwindcss": "^4.1.14",
     "tsx": "^4.20.6",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "storybook": "^9.1.10",
+    "@storybook/nextjs": "^9.1.10",
+    "@chromatic-com/storybook": "^4.1.1",
+    "@storybook/addon-docs": "^9.1.10",
+    "@storybook/addon-onboarding": "^9.1.10",
+    "@storybook/addon-a11y": "^9.1.10",
+    "@storybook/addon-vitest": "^9.1.10"
   }
 }

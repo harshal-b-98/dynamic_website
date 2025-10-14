@@ -7,6 +7,9 @@
 import { PageSpecification } from './page-generation'
 import { InteractionContext, PageHistoryItem, NavigationStack } from './interaction-types'
 
+// Re-export types for convenience
+export type { NavigationStack, PageHistoryItem }
+
 /**
  * Create a new navigation stack
  */

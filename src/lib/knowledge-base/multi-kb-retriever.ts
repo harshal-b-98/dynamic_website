@@ -12,6 +12,12 @@ import {
   getAdjustedTopK,
   type IntentKBWeighting
 } from './kb-categories'
+import {
+  performCoverageAnalysis,
+  type CoverageAnalysis,
+  type RelevanceStats,
+  type QueryAspect
+} from '../rag/kb-coverage-analyzer'
 
 export interface MultiKBRetrievalOptions {
   // User intent to determine KB weighting
@@ -36,6 +42,43 @@ export interface MultiKBRetrievalResult {
   totalResults: number
   processingTime: number
   weights: IntentKBWeighting
+}
+
+/**
+ * Enhanced retrieval result with coverage analysis and metadata
+ */
+export interface EnhancedRetrievalResult extends MultiKBRetrievalResult {
+  metadata: {
+    // Relevance Analysis
+    averageRelevance: number           // 0-1 (avg of all similarity scores)
+    minRelevance: number               // Lowest similarity score
+    maxRelevance: number               // Highest similarity score
+    relevanceStats: RelevanceStats     // Detailed relevance breakdown
+
+    // Coverage Analysis
+    coverageScore: number              // 0-100 (% of query covered by KB)
+    queryAspects: string[]             // Detected aspects in query
+    coveredAspects: string[]           // Aspects found in KB
+    uncoveredAspects: string[]         // Aspects not in KB
+
+    // Source Tracking
+    topSources: Array<{
+      source: string
+      relevance: number
+      kbType: 'guidelines' | 'personas' | 'product'
+    }>
+
+    // Gap Analysis
+    missingTopics: string[]            // Topics needed but not in KB
+    lowConfidenceAreas: string[]       // Areas with low relevance scores
+
+    // Performance
+    retrievalTime: number
+    tokensRetrieved: number
+
+    // Query Analysis
+    extractedAspects: QueryAspect[]    // Full query aspect details
+  }
 }
 
 /**
@@ -170,4 +213,73 @@ export function filterByThreshold(
   threshold: number
 ): RetrievalResult[] {
   return results.filter(r => r.similarity >= threshold)
+}
+
+/**
+ * Enhanced retrieval with coverage analysis and metadata
+ *
+ * This function performs the same retrieval as retrieveFromMultipleKBs
+ * but adds comprehensive coverage analysis, relevance tracking, and gap detection
+ */
+export async function retrieveFromMultipleKBsEnhanced(
+  query: string,
+  options: MultiKBRetrievalOptions = {}
+): Promise<EnhancedRetrievalResult> {
+  // First, do standard retrieval
+  const standardResult = await retrieveFromMultipleKBs(query, options)
+
+  // Perform coverage analysis
+  const analysis = performCoverageAnalysis(
+    query,
+    options.intent,
+    standardResult.guidelines,
+    standardResult.personas,
+    standardResult.product
+  )
+
+  // Calculate tokens retrieved (rough estimate based on content length)
+  const allResults = [
+    ...standardResult.guidelines,
+    ...standardResult.personas,
+    ...standardResult.product
+  ]
+
+  const tokensRetrieved = allResults.reduce((sum, result) => {
+    // Rough estimate: ~4 characters per token
+    const titleTokens = (result.contentTitle?.length || 0) / 4
+    const textTokens = (result.contentText?.length || 0) / 4
+    return sum + titleTokens + textTokens
+  }, 0)
+
+  // Build enhanced result
+  return {
+    ...standardResult,
+    metadata: {
+      // Relevance Analysis
+      averageRelevance: analysis.relevanceStats.averageRelevance,
+      minRelevance: analysis.relevanceStats.minRelevance,
+      maxRelevance: analysis.relevanceStats.maxRelevance,
+      relevanceStats: analysis.relevanceStats,
+
+      // Coverage Analysis
+      coverageScore: analysis.coverage.coverageScore,
+      queryAspects: analysis.coverage.queryAspects,
+      coveredAspects: analysis.coverage.coveredAspects,
+      uncoveredAspects: analysis.coverage.uncoveredAspects,
+
+      // Source Tracking
+      topSources: analysis.topSources,
+
+      // Gap Analysis
+      missingTopics: analysis.coverage.missingTopics,
+      lowConfidenceAreas: analysis.coverage.lowConfidenceAreas,
+
+      // Performance
+      retrievalTime: standardResult.processingTime,
+      tokensRetrieved: Math.round(tokensRetrieved),
+
+      // Query Analysis
+      extractedAspects: analysis.queryAspects
+    }
+  }
 }

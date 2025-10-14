@@ -1,0 +1,65 @@
+
+> dynamic_website@1.0.0 build
+> next build
+
+   ▲ Next.js 15.5.4
+   - Environments: .env.local
+
+   Creating an optimized production build ...
+Failed to compile.
+
+./src/lib/page-generation-prompts.ts
+Error:   [31mx[0m Expected ';', got 'string literal (spacing, "spacing")'
+     ,-[[36;1;4mD:\ClaudeProjects\dynamic_website\src\lib\page-generation-prompts.ts[0m:150:1]
+ [2m147[0m | - ✅ **spacing = "spacious"** (REQUIRED - 80px between components)
+ [2m148[0m | - ❌ **NEVER use "compact" (48px) or "normal" (64px)**
+ [2m149[0m | - This provides generous breathing room and professional Vercel-style feel
+ [2m150[0m | - Example: `"spacing": "spacious"` in layout object
+     : [35;1m            ^^^^^^^^^[0m
+ [2m151[0m | 
+ [2m152[0m | ### 2. Component Count Limits (Quality > Quantity)
+ [2m153[0m | - ✅ **MAXIMUM 5 components per page** (Vercel minimalism)
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/lib/page-generation-prompts.ts
+./src/services/PageGenerationService.ts
+./src/services/index.ts
+./src/app/api/page/generate/route.ts
+
+
+> Build failed because of webpack errors
+
+> dynamic_website@1.0.0 build
+> next build
+
+   ▲ Next.js 15.5.4
+   - Environments: .env.local
+
+   Creating an optimized production build ...
+Found 1 warning while optimizing generated CSS:
+
+[2m│   }[22m
+[2m│ }[22m
+[2m│[22m @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap');
+[2m┆[22m        [33m[2m^--[22m @import rules must precede all rules aside from @charset and @layer statements[39m
+[2m┆[22m
+[2m│ :root {[22m
+[2m│   --deep-indigo: #0A1930;[22m
+
+ ✓ Compiled successfully in 16.5s
+   Linting and checking validity of types ...
+Failed to compile.
+
+./src/components/atoms/Checkbox.stories.tsx:1:37
+Type error: Cannot find module '@storybook/react' or its corresponding type declarations.
+
+[0m[31m[1m>[22m[39m[90m 1 |[39m [36mimport[39m type { [33mMeta[39m[33m,[39m [33mStoryObj[39m } [36mfrom[39m [32m'@storybook/react'[39m
+ [90m   |[39m                                     [31m[1m^[22m[39m
+ [90m 2 |[39m [36mimport[39m { [33mCheckbox[39m } [36mfrom[39m [32m'./Checkbox'[39m
+ [90m 3 |[39m
+ [90m 4 |[39m [36mconst[39m meta [33m=[39m {[0m
+Next.js build worker exited with code: 1 and signal: null

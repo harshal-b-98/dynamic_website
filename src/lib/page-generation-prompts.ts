@@ -139,40 +139,107 @@ Generate a valid JSON PageSpecification with this exact structure:
 ✅ **Visual Hierarchy** - Use proper spacing and layout for readability
 ✅ **Scannable** - Break content into digestible chunks with clear headings
 
-## Layout & Spacing Guidelines ⚠️ ABSOLUTELY CRITICAL - PAGES WILL FAIL WITHOUT THESE
-1. **spacing MUST BE "spacious"** - This is NON-NEGOTIABLE. "compact" and "normal" are FORBIDDEN
-2. **MAXIMUM 4-5 components per page** - More than 5 creates visual chaos
-3. **Hero component is REQUIRED first** - Always order=0, sets context
-4. **2-3 content components maximum** - Core info only (feature-grid, stats, comparison)
-5. **ONE action component at end** - CTA or form, always last
-6. **ALL components MUST have size="lg" or "xl"** - Small sizes are not allowed
-7. **Feature grids: STRICT LIMIT of 3-4 items** - 5+ items ruins the layout
-8. **Descriptions: ONE sentence, 60-80 characters MAX** - No paragraphs in feature cards
+## Layout & Spacing Guidelines ⚠️ ABSOLUTELY CRITICAL - POST-GENERATION VALIDATION ENFORCED
 
-## Content Generation Rules
-1. **Factual Accuracy** - Base content on provided context and general knowledge
-2. **Appropriate Tone** - Professional yet conversational
-3. **Conciseness** - Clear, scannable content (avoid walls of text)
+**IMPORTANT**: All pages undergo automatic UI quality validation based on shadcn/ui, Vercel, and Tailwind CSS best practices. Non-compliant pages are auto-corrected but may result in regeneration. Follow these rules precisely:
+
+### 1. Spacing Standards (Vercel Minimalism)
+- ✅ **spacing = "spacious"** (REQUIRED - 80px between components)
+- ❌ **NEVER use "compact" (48px) or "normal" (64px)**
+- This provides generous breathing room and professional Vercel-style feel
+- Example: \\"spacing\\": \\"spacious\\" in layout object
+
+### 2. Component Count Limits (Quality > Quantity)
+- ✅ **MAXIMUM 5 components per page** (Vercel minimalism)
+- ❌ **More than 5 creates visual chaos and poor UX**
+- Optimal: 3-4 components (hero + 2-3 content sections)
+- Each component needs space to breathe
+
+### 3. Visual Hierarchy (shadcn Patterns)
+- ✅ **First component MUST be "hero-section" or "page-header"** (order=0)
+- ❌ **Cannot start with feature-grid, stats, or other components**
+- ✅ **Last component should be "cta-section"** for conversion
+- Establish context → provide value → drive action
+
+### 4. Component Sizing (Tailwind Standards)
+- ✅ **Hero sections: size="xl"** (REQUIRED - 128px padding for maximum impact)
+- ✅ **All other components: size="lg" minimum** (96px padding)
+- ❌ **NEVER use size="sm" (48px) or "md" (64px)** - too cramped
+- Larger sizes = better UX and visual impact
+
+### 5. Feature Grids (Clean Layouts)
+- ✅ **MAXIMUM 4 features per grid** (fits responsive 2x2 or 4x1)
+- ❌ **5+ features creates cramped, overwhelming layout**
+- ✅ **Each feature: ONE sentence description (80-100 chars MAX)**
+- Keep scannable and focused on key benefits
+
+### 6. Content Quality Standards (Tailwind Readability)
+- **Headlines**: 60-80 characters MAX (one clear, compelling message)
+- **Subheadings**: 120-160 characters MAX (two sentences maximum)
+- **Feature descriptions**: 80-100 characters (one benefit, not features)
+- ❌ **NO placeholder content** (lorem, ipsum, example, dummy, placeholder)
+- Make every word count - quality over quantity
+
+### 7. Accessibility Requirements (WCAG 2.1 AA)
+- ✅ **ALL images MUST have descriptive alt text** (not "image" or "photo")
+- ✅ **CTA buttons: Action verbs** ("Start Free Trial" not "Click Here")
+- ✅ **Semantic HTML: Proper heading hierarchy** (h1 → h2 → h3, no skips)
+- ✅ **Color contrast: 4.5:1 minimum for text**
+
+## Content Generation Rules (shadcn/Tailwind Principles)
+1. **Factual Accuracy** - Base content on provided KB context and knowledge
+2. **Appropriate Tone** - Professional yet conversational (Vercel voice)
+3. **Conciseness** - Clear, scannable content (no walls of text)
 4. **Value-Focused** - Emphasize benefits over features
-5. **Action-Oriented** - Include clear calls-to-action
-6. **SEO-Friendly** - Use proper headings, keywords, and structure
-7. **Short Descriptions** - Keep feature descriptions to 1-2 sentences (max 100 chars)
-8. **Limited Feature Lists** - 3-4 features per grid, not 6-8
+5. **Action-Oriented** - Include clear CTAs at strategic points
+6. **SEO-Friendly** - Proper headings, keywords, meta descriptions
+7. **Responsive-First** - Content works on mobile, tablet, desktop
+8. **Brand-Aligned** - Follow KB guidelines for voice and messaging
+
+## Design System Reference (Auto-Applied Post-Generation)
+Our unified design system automatically applies:
+- **Spacing**: spacious = 80px (20 in Tailwind scale)
+- **Typography**: Responsive text scales (4xl → 6xl for display)
+- **Shadows**: Subtle elevation (md, lg, xl with colored variants)
+- **Animations**: Smooth 300ms transitions (hoverLift, hoverScale)
+- **Grids**: Responsive 2/3/4 column layouts
+- **Border Radius**: xl (12px) for cards, 2xl (16px) for sections
+
+## Quality Validation System (Runs After Generation)
+All pages are scored 0-100 on these criteria:
+- **Spacing standards** (Critical: -20 points if not "spacious")
+- **Component sizing** (Critical: -20 points if hero not "xl")
+- **Component limits** (Critical: -20 points if >5 components)
+- **Content quality** (Warning: -10 points for long text)
+- **Visual hierarchy** (Critical: -20 points if no hero first)
+- **Accessibility** (Warning: -10 points for missing alt text)
+
+**Score Interpretation**:
+- 90-100: ✨ Excellent (ship it!)
+- 75-89: 👍 Good (minor auto-corrections)
+- 60-74: ⚠️ Fair (needs work, auto-corrected)
+- <60: ❌ Poor (may trigger regeneration)
 
 ## CRITICAL - ABSOLUTE REQUIREMENTS
 - Respond ONLY with valid JSON (no markdown, no explanations)
 - Ensure all components exist in the provided registry
 - Populate ALL required props for selected components
-- Generate real, meaningful content (no placeholders like "Lorem ipsum")
+- Generate real, meaningful content (no placeholders)
 - Consider the user's intent and conversation history
 - Adapt to detected persona when provided
 
-## ⚠️ SPACING CHECKLIST - VERIFY BEFORE SENDING
+## ⚠️ PRE-SUBMISSION CHECKLIST - VERIFY BEFORE SENDING
 ✅ layout.spacing = "spacious" (NOT "compact" or "normal")
-✅ Total components = 4-5 maximum (NOT 6+)
-✅ Component size = "lg" or "xl" (NOT "sm" or "md")
-✅ Feature grid items = 3-4 maximum (NOT 5+)
-✅ Descriptions = ONE sentence, under 80 characters`
+✅ Total components = 3-5 (NOT 6+)
+✅ First component = "hero-section" or "page-header" (NOT feature-grid)
+✅ Hero size = "xl" (NOT "lg", "md", or "sm")
+✅ All other components size = "lg" or "xl" (NOT "sm" or "md")
+✅ Feature grids = 3-4 items MAX (NOT 5+)
+✅ Feature descriptions = 80-100 chars MAX (NOT paragraphs)
+✅ Headlines = 60-80 chars (NOT 100+)
+✅ Subheadings = 120-160 chars (NOT 200+)
+✅ All images have alt text (NOT missing or "image")
+✅ CTAs use action verbs (NOT "click here" or "learn more")`
 }
 
 /**

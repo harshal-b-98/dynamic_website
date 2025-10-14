@@ -98,3 +98,5 @@ temp/
 playwright-report/
 test-results/
 playwright/.cache/
+
+*storybook.log
