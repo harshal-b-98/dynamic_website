@@ -140,8 +140,9 @@ export default function Home() {
               <a href="#functions" className="font-inter transition-colors" style={{ color: '#FFFFFF' }}
                 onMouseOver={(e) => e.currentTarget.style.color = '#00C8FF'}
                 onMouseOut={(e) => e.currentTarget.style.color = '#FFFFFF'}>Functions</a>
-              <a href="#contact">
-                <button className="px-6 py-2.5 rounded-lg font-mont font-semibold transition-all shadow-md"
+              <a href="/contact">
+                <button
+                  className="px-6 py-2.5 rounded-lg font-mont font-semibold transition-all shadow-md"
                   style={{ backgroundColor: '#00C8FF', color: '#0A1930' }}
                   onMouseOver={(e) => { e.currentTarget.style.backgroundColor = '#FFFFFF'; e.currentTarget.style.color = '#0A1930'; }}
                   onMouseOut={(e) => { e.currentTarget.style.backgroundColor = '#00C8FF'; e.currentTarget.style.color = '#0A1930'; }}>
@@ -224,8 +225,9 @@ export default function Home() {
                   See How It Works
                 </button>
               </a>
-              <a href="#contact">
-                <button className="px-8 py-4 rounded-lg border-2 font-mont font-semibold text-lg transition-all"
+              <a href="/contact">
+                <button
+                  className="px-8 py-4 rounded-lg border-2 font-mont font-semibold text-lg transition-all"
                   style={{ backgroundColor: '#0A1930', color: '#00C8FF', borderColor: '#00C8FF' }}
                   onMouseOver={(e) => { e.currentTarget.style.backgroundColor = '#00C8FF'; e.currentTarget.style.color = '#0A1930'; }}
                   onMouseOut={(e) => { e.currentTarget.style.backgroundColor = '#0A1930'; e.currentTarget.style.color = '#00C8FF'; }}>
@@ -398,8 +400,9 @@ export default function Home() {
                   See how ConsumerIQ can help your team make faster, smarter decisions with unified market intelligence built specifically for beverage alcohol suppliers.
                 </p>
               </div>
-              <a href="#contact" className="inline-block">
-                <button className="w-full px-6 py-4 rounded-lg font-mont font-semibold text-lg transition-all duration-300"
+              <a href="/contact" className="block w-full">
+                <button
+                  className="w-full px-6 py-4 rounded-lg font-mont font-semibold text-lg transition-all duration-300"
                   style={{ backgroundColor: '#00C8FF', color: '#0A1930' }}
                   onMouseOver={(e) => {
                     e.currentTarget.style.backgroundColor = '#0A1930';
@@ -653,26 +656,19 @@ export default function Home() {
         <div className="container mx-auto px-6">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-4xl md:text-5xl font-mont font-bold mb-6" style={{ color: '#0A1930' }}>
-              Ready to Turn Data Chaos into Commercial Advantage?
+              Ready to turn data chaos into commercial advantage?
             </h2>
             <p className="text-xl mb-10 font-inter leading-relaxed" style={{ color: '#FFFFFF' }}>
               The U.S. beverage alcohol market rewards speed, precision, and intelligence. ConsumerIQ delivers the unified analytics foundation your team needs to compete—and win.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a href="#contact">
-                <button className="px-10 py-4 rounded-lg font-mont font-bold text-lg transition-all shadow-lg"
+            <div className="flex justify-center">
+              <a href="/contact">
+                <button
+                  className="px-10 py-4 rounded-lg font-mont font-bold text-lg transition-all shadow-lg"
                   style={{ backgroundColor: '#FFFFFF', color: '#0A1930' }}
                   onMouseOver={(e) => { e.currentTarget.style.backgroundColor = '#0A1930'; e.currentTarget.style.color = '#FFFFFF'; e.currentTarget.style.outline = '2px solid #FFFFFF'; }}
                   onMouseOut={(e) => { e.currentTarget.style.backgroundColor = '#FFFFFF'; e.currentTarget.style.color = '#0A1930'; e.currentTarget.style.outline = 'none'; }}>
                   Schedule a Demo
-                </button>
-              </a>
-              <a href="#faq">
-                <button className="px-10 py-4 rounded-lg border-2 font-mont font-bold text-lg transition-all"
-                  style={{ backgroundColor: 'transparent', color: '#FFFFFF', borderColor: '#FFFFFF' }}
-                  onMouseOver={(e) => { e.currentTarget.style.backgroundColor = '#FFFFFF'; e.currentTarget.style.color = '#0A1930'; }}
-                  onMouseOut={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = '#FFFFFF'; }}>
-                  View FAQ
                 </button>
               </a>
             </div>

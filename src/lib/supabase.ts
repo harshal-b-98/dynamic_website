@@ -54,3 +54,19 @@ export interface DynSession {
   updated_at: string
   expires_at?: string
 }
+
+export interface DynContactSubmission {
+  id: string
+  name: string
+  email: string
+  phone: string
+  company: string
+  role: string
+  reason: string
+  message?: string
+  submitted_at: string
+  status: 'new' | 'in_progress' | 'contacted' | 'closed'
+  metadata: Record<string, any>
+  created_at: string
+  updated_at: string
+}
