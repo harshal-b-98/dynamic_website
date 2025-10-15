@@ -5,7 +5,7 @@
 ## Overview
 This document maintains a comprehensive reference of all API endpoints and UI components in the Dynamic AI-Driven Website project.
 
-**Last Updated**: 2025-10-13
+**Last Updated**: 2025-10-15
 
 ---
 
@@ -318,6 +318,166 @@ Retrieve relevant content from multiple specialized knowledge bases in parallel
 
 ---
 
+### Contact Form & Lead Management
+✅ **Implemented in feature/ui-updates branch**
+
+#### POST /api/contact/submit
+Submit contact form with validation and email notifications
+
+```typescript
+// Request Body
+{
+  name: string          // Full name (min 2 chars)
+  email: string         // Valid email address
+  phone: string         // Phone number (min 10 chars)
+  company: string       // Company name (min 2 chars)
+  role: string          // Selected role from dropdown
+  reason: string        // Selected reason from dropdown
+  message?: string      // Optional message
+}
+
+// Response
+{
+  success: boolean
+  message: string               // Success/error message
+  submissionId?: string         // UUID of created submission
+}
+
+// Error Response
+{
+  success: false
+  error: string                 // Validation or server error
+}
+```
+
+**Authentication**: None (public endpoint)
+**Validation**: Server-side with zod schema
+**Email Service**: Resend with branded HTML template
+**Database Table**: dyn_contact_submissions
+**Metadata Tracked**: User agent, IP address, timestamp
+
+**Role Options** (9):
+- C-Suite Executive
+- VP/Director
+- Manager
+- Sales
+- Marketing
+- Data/Analytics
+- IT/Technology
+- Operations
+- Other
+
+**Reason Options** (7):
+- Schedule a Demo
+- Request Pricing Information
+- Technical Support
+- Partnership Inquiry
+- General Question
+- Product Feedback
+- Other
+
+**Email Configuration**:
+- Recipient: info@consumeriq.ai
+- Sender: Configured via RESEND_FROM_EMAIL
+- Template: Professional HTML with ConsumerIQ branding
+- Fallback: Console logging if service not configured
+
+**Features**:
+- Real-time client and server validation
+- XSS protection via content sanitization
+- Metadata tracking for analytics
+- Status workflow (new → in_progress → contacted → closed)
+- Automatic timestamp tracking (submitted_at, created_at, updated_at)
+
+---
+
+#### GET /api/contact/submissions
+Retrieve contact form submissions with filtering
+
+```typescript
+// Query Parameters
+?status=<string>      // Filter: 'all', 'new', 'in_progress', 'contacted', 'closed'
+&limit=<number>       // Max results (default: 50)
+
+// Response
+{
+  success: boolean
+  submissions: DynContactSubmission[]
+  total: number
+  limit: number
+  offset: number
+}
+
+// DynContactSubmission Structure
+{
+  id: string                                    // UUID
+  name: string
+  email: string
+  phone: string
+  company: string
+  role: string
+  reason: string
+  message?: string
+  submitted_at: string                          // ISO timestamp
+  status: 'new' | 'in_progress' | 'contacted' | 'closed'
+  metadata: {
+    user_agent?: string
+    ip_address?: string
+  }
+  created_at: string                            // ISO timestamp
+  updated_at: string                            // ISO timestamp
+}
+
+// Error Response
+{
+  success: false
+  error: string
+}
+```
+
+**Authentication**: Requires valid Supabase session (admin only)
+**Database Query**: Ordered by submitted_at DESC
+**Indexes**: status, submitted_at, email, company
+**Pagination**: Limit parameter (default 50, max 250)
+
+**Status Workflow**:
+1. **new**: Initial submission (default)
+2. **in_progress**: Team member reviewing/responding
+3. **contacted**: Follow-up communication sent
+4. **closed**: Resolved or no longer active
+
+---
+
+#### PATCH /api/contact/submissions
+Update contact submission status
+
+```typescript
+// Request Body
+{
+  id: string            // Submission UUID
+  status: string        // New status value
+}
+
+// Response
+{
+  success: boolean
+  submission: DynContactSubmission    // Updated submission
+}
+
+// Error Response
+{
+  success: false
+  error: string
+}
+```
+
+**Authentication**: Requires valid Supabase session (admin only)
+**Validation**: Status must be one of: new, in_progress, contacted, closed
+**Auto-Update**: updated_at timestamp automatically set via trigger
+**Use Case**: Admin dashboard inline status updates
+
+---
+
 ## UI Components
 
 ### Chat Interface
@@ -385,13 +545,120 @@ interface ChatInputProps {
 ```
 
 ### Dynamic Page Renderer
-_Epic 1: Story 1.4_
+✅ **Implemented in DYN-5 (Story 1.4)**
+
+**Location**: `src/components/organisms/DynamicPageRenderer.tsx`
+**Purpose**: Renders dynamically generated pages from specifications
 
 ```typescript
-// Location: src/components/organisms/DynamicPageRenderer.tsx
-// Purpose: Renders dynamically generated pages from specifications
-// Props: { pageSpec: PageSpecification, context: RenderContext }
+interface DynamicPageRendererProps {
+  pageSpec: PageSpecification
+  onInteraction?: (interaction: InteractionHandlerProps) => void
+  onComponentError?: (componentType: string, error: Error) => void
+}
+
+// Features:
+// - Dynamic component loading with lazy imports
+// - Error boundaries per component
+// - Loading skeletons (hero, chart, table, form variants)
+// - Responsive layouts (single-column, two-column, grid)
+// - Smooth animations (300ms fade-in)
+// - Staggered component entrance (50ms delay, max 300ms)
 ```
+
+---
+
+### Contact Page & Form
+✅ **Implemented in feature/ui-updates branch**
+
+#### ContactPage (Page Component)
+**Location**: `src/app/contact/page.tsx`
+**Route**: `/contact`
+**Purpose**: Full-page contact form with company information
+
+```typescript
+// Features:
+// - Two-column responsive layout (lg:grid-cols-5)
+// - Left section (2 cols): Company contact details
+// - Right section (3 cols): Contact form
+// - Navbar and footer consistent with home page
+// - Form height matches left section height
+// - Inline styles with brand colors
+
+// Left Section Components:
+// 1. Contact Information Card
+//    - Email: info@consumeriq.ai
+//    - Phone: +1 (609) 619-0021
+// 2. North America Address
+//    - 3 Lenmore Ct, Monroe Township, NJ 08831
+// 3. India Address
+//    - Twenty20 Systems, Bengaluru full address
+// 4. Why ConsumerIQ? Card
+//    - 4 highlights with checkmarks
+
+// Right Section:
+// - Contact form with validation
+// - 6 required fields + 1 optional field
+// - Real-time error messages
+// - Success/error feedback with icons
+```
+
+**Styling**:
+- Background: Light Data Gray (#EBEFF2)
+- Cards: White with shadow-sm
+- Accents: Electric Cyan (#00C8FF)
+- Text: Deep Indigo (#0A1930) on light, White (#FFFFFF) on dark
+- Fonts: Montserrat (headings), Inter (body)
+
+**Form Validation**: react-hook-form + zod schema
+**Icons**: Feather Icons (mail, phone, map-pin, check)
+
+---
+
+#### Admin Dashboard (Page Component)
+**Location**: `src/app/admin/contact-submissions/page.tsx`
+**Route**: `/admin/contact-submissions`
+**Purpose**: Manage contact form submissions
+
+```typescript
+// Features:
+// - View all submissions with filtering by status
+// - Status workflow: new → in_progress → contacted → closed
+// - Inline status updates with dropdown
+// - Display all submission details
+// - Responsive cards with Electric Cyan accents
+// - Real-time data refresh
+
+// Status Badge Colors:
+// - new: Blue (#3B82F6)
+// - in_progress: Yellow (#F59E0B)
+// - contacted: Green (#10B981)
+// - closed: Gray (#6B7280)
+```
+
+**Authentication**: Requires Supabase session
+**Data Fetching**: Client-side via fetch API
+**Refresh**: Manual via "Refresh" button
+
+---
+
+#### FeatherIcon (Atom)
+**Location**: `src/components/atoms/FeatherIcon.tsx`
+**Purpose**: Reusable icon component using Feather Icons library
+
+```typescript
+interface FeatherIconProps {
+  name: string              // Icon name (e.g., 'mail', 'phone', 'check')
+  size?: number             // Icon size in pixels (default: 24)
+  color?: string            // Icon color (default: 'currentColor')
+  strokeWidth?: number      // Stroke width (default: 2)
+}
+
+// Usage:
+<FeatherIcon name="mail" size={24} color="#00C8FF" strokeWidth={2} />
+```
+
+**Icons Available**: All Feather Icons (mail, phone, map-pin, check, alert-circle, check-circle, linkedin, twitter, facebook, etc.)
 
 ---
 
@@ -444,3 +711,21 @@ _Epic 1: Story 1.4_
   * RAG integration into page generation flow
   * Performance: ~4-5s for 3-KB parallel retrieval
   * Graceful error handling per KB
+- 2025-10-15: Added UI Updates (feature/ui-updates branch):
+  * POST /api/contact/submit endpoint (contact form submission)
+  * GET /api/contact/submissions endpoint (admin retrieval)
+  * PATCH /api/contact/submissions endpoint (status updates)
+  * Contact page at /contact route (full-page layout)
+  * Admin dashboard at /admin/contact-submissions
+  * FeatherIcon atom component
+  * Database schema: dyn_contact_submissions table
+  * Email integration: Resend service with branded templates
+  * Status workflow: new → in_progress → contacted → closed
+  * Form validation: react-hook-form + zod
+  * Navbar redesign: sticky, Deep Indigo, backdrop blur
+  * Footer implementation: 4-column layout with newsletter signup
+  * FAQ section refinements: sentence case title, single CTA button
+  * Button navigation mappings: all "Talk to Our Team" → /contact
+  * Brand consistency: Deep Indigo, Electric Cyan, White color palette
+  * Typography: Montserrat (headings), Inter (body)
+  * Responsive design: mobile, tablet, desktop breakpoints
